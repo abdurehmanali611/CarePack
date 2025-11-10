@@ -14,23 +14,11 @@ import { Form } from "./ui/form";
 import { AlertTriangle, Hospital, Mail, User, User2 } from "lucide-react";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "./ui/alert-dialog";
-import { InputOTP, InputOTPGroup, InputOTPSlot } from "./ui/input-otp";
 import { useCallback, useState } from "react";
-import axios from "axios";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { newUserSchema } from "@/lib/validation";
 import CustomFormField, { formFieldTypes } from "./customFormField";
+import { onSubmitUser } from "@/lib/actions";
 
 const PASSKEY_ROLE_MAP: Record<string, string> = {
   // Admin Keys
@@ -62,38 +50,6 @@ export default function NewUser() {
   const [dialogError, setDialogError] = useState<string | null>(null);
 
   const router = useRouter();
-
-  async function onSubmit(values: z.infer<typeof newUserSchema>) {
-    console.log(values);
-    try {
-      setProceed(true);
-      await axios
-        .post("http://localhost:4000/users", values, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-        .then((res) => res.data)
-        .then((data) => {
-          localStorage.setItem("patientId", data._id);
-          form.reset();
-
-          router.push("/Appointment");
-        });
-      setProceed(false);
-    } catch (error: unknown) {
-      setProceed(false);
-      let errorMessage = "An unknown error occurred during User Creation";
-      if (axios.isAxiosError(error)) {
-        errorMessage = error.response?.data?.message || error.message;
-      } else if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-      console.log(errorMessage);
-      setError(errorMessage);
-      return;
-    }
-  }
 
   const handlePassKeySubmit = useCallback(
     (item: string) => {
@@ -140,7 +96,7 @@ export default function NewUser() {
 
   return (
     <div className="flex flex-col items-center h-screen justify-between px-20 my-10">
-      <Card className="lg:w-[60%] w-[465px] md:w-[650px]">
+      <Card className="w-[60%]">
         <CardHeader>
           <CardTitle className="flex flex-col gap-10">
             <div className="flex gap-2 items-center">
@@ -154,7 +110,9 @@ export default function NewUser() {
         <CardContent>
           <Form {...form}>
             <form
-              onSubmit={form.handleSubmit(onSubmit)}
+              onSubmit={form.handleSubmit((values) =>
+                onSubmitUser(values, setProceed, form, setError, router)
+              )}
               className="flex flex-col gap-5"
             >
               <CustomFormField
@@ -165,7 +123,7 @@ export default function NewUser() {
                 placeholder="Abiy Ahmed"
                 icon={User}
               />
-              <div className="md:flex md:justify-between md:items-center">
+              <div className="flex justify-between items-center">
                 <CustomFormField
                   name="email"
                   control={form.control}
@@ -183,7 +141,7 @@ export default function NewUser() {
                   label="Phone Number:"
                 />
               </div>
-              <div className="md:flex md:justify-between md:items-center">
+              <div className="flex justify-between items-center">
                 <CustomFormField
                   name="birthDate"
                   control={form.control}
@@ -199,7 +157,7 @@ export default function NewUser() {
                   listdisplay={["Male", "Female", "Other"]}
                 />
               </div>
-              <div className="md:flex md:justify-between md:items-center">
+              <div className="flex justify-between items-center">
                 <CustomFormField
                   name="emergencyContactName"
                   control={form.control}
@@ -226,92 +184,15 @@ export default function NewUser() {
           <p>
             &copy; <span>2025 CarePack</span>
           </p>
-          {["Doctor", "Admin"].map((item) => (
-            <AlertDialog
-              key={item}
-              onOpenChange={(open) => {
-                if (!open) {
-                  setPassKey("");
-                  setDialogError(null);
-                }
-              }}
-            >
-              <AlertDialogTrigger asChild>
-                <Button
-                  key={item}
-                  variant="link"
-                  className="cursor-pointer text-blue-400 hover:text-red-400"
-                >
-                  {item}
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent className="w-fit">
-                <AlertDialogHeader>
-                  <AlertDialogTitle asChild>
-                    <h4 className="font-serif text-lg font-semibold">
-                      {item} Access Verification
-                    </h4>
-                  </AlertDialogTitle>
-                  <AlertDialogDescription asChild>
-                    <p className="text-sm font-normal">
-                      Please Enter the PassKey
-                    </p>
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                {dialogError && (
-                  <div className="flex items-center text-sm text-red-600 border border-red-300 bg-red-50 p-2 rounded-md">
-                    <AlertTriangle className="h-4 w-4 mr-2" />
-                    {dialogError}
-                  </div>
-                )}
-                <InputOTP
-                  maxLength={6}
-                  value={passKey}
-                  onChange={(e) => setPassKey(e)}
-                >
-                  <InputOTPGroup>
-                    <InputOTPSlot index={0} />
-                  </InputOTPGroup>
-                  <InputOTPGroup>
-                    <InputOTPSlot index={1} />
-                  </InputOTPGroup>
-                  <InputOTPGroup>
-                    <InputOTPSlot index={2} />
-                  </InputOTPGroup>
-                  <InputOTPGroup>
-                    <InputOTPSlot index={3} />
-                  </InputOTPGroup>
-                  <InputOTPGroup>
-                    <InputOTPSlot index={4} />
-                  </InputOTPGroup>
-                  <InputOTPGroup>
-                    <InputOTPSlot index={5} />
-                  </InputOTPGroup>
-                </InputOTP>
-                <AlertDialogFooter>
-                  <AlertDialogCancel
-                    className="cursor-pointer"
-                    onClick={() => {
-                      setPassKey("");
-                      setDialogError(null);
-                    }}
-                  >
-                    Cancel
-                  </AlertDialogCancel>
-                  <AlertDialogAction
-                    className="cursor-pointer"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handlePassKeySubmit(item);
-                    }}
-                    disabled={passKey.length < 6}
-                  >
-                    Submit
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          ))}
+           <CustomFormField 
+           fieldType={formFieldTypes.ALERTDIALOG}
+           listdisplay={["Doctor", "Admin"]}
+           setPassKey={setPassKey}
+           passKey={passKey}
+           setDialogError={setDialogError}
+           dialogError={dialogError}
+           handleAlertDialog={handlePassKeySubmit}
+           />
         </CardFooter>
       </Card>
     </div>

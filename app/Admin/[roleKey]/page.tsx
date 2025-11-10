@@ -1,5 +1,6 @@
-import GeneralManager from "@/components/generalManager";
-import { Briefcase, Users } from "lucide-react";
+import Card from "@/components/Card";
+import CardLeader from "@/components/CardLeader";
+import { Briefcase, HospitalIcon, Users } from "lucide-react";
 
 interface AdminPageProps {
   params: Promise<{
@@ -29,7 +30,7 @@ const ROLE_DATA = {
       "Conduct quarterly performance evaluations",
       "Allocate team resources",
     ],
-  }
+  },
 };
 
 export default async function Admin({ params }: AdminPageProps) {
@@ -55,15 +56,24 @@ export default async function Admin({ params }: AdminPageProps) {
     );
   }
 
-  return <div className="p-5">
-    {role.name == "General Manager" ? (
-      <div>
-        <GeneralManager role = {role}/>
+  return (
+    <div className="p-5 flex flex-col gap-10">
+      <div className="flex justify-between items-center">
+        <div className="flex gap-3 items-center">
+          <HospitalIcon />
+          CarePack
+        </div>
+        {role.name}
       </div>
-    ) : (
-      <div>
-
+      <div className="flex flex-col gap-3">
+        <p>Hi there 👋</p>
+        <p>Take alook for Reports you have</p>
       </div>
-    )}
-  </div>
+      {role.name == "General Manager" ? (
+          <Card />
+      ) : (
+        <CardLeader />
+      )}
+    </div>
+  );
 }
