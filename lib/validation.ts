@@ -82,3 +82,18 @@ export const patientMedicalInfo = z.object({
   identity_Number: z.string().min(2, "Please Enter a valid Id No"),
   identity_photo: z.string().min(10, "Please Enter Your scanned ID Image")
 });
+
+export const doctorCredentialForm = z.object({
+  Full_Name: z.string().min(2, "Please Enter Doctor's Name"),
+  Sex: z.string().min(1, "Please Select his/her sex"),
+  Speciality: z.string().min(1, "Please Select the field of Speciality"),
+  experienceYear: z.number().min(0, "Please Enter his/her years of Experience"),
+  passKey: z.string().min(6, "Please enter 'Six' digit Passkey")
+})
+
+export const adminCredentialForm = z.object({
+  Full_Name: z.string().min(2, "Please Enter the Admin Name"),
+  Sex: z.string().min(1, "Please Select the his/her sex"),
+  experienceYear: z.number().min(0, "Please Enter his/her year of Experience"),
+  passKey: z.string().min(6, "Please Enter 'Six' digit passkey")
+})

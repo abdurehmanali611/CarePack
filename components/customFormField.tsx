@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Image from "next/image";
-import React, { useState } from "react";
+import React from "react";
 import { Control } from "react-hook-form";
-import { FormControl, FormField, FormItem, FormLabel } from "./ui/form";
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "./ui/form";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { Label } from "./ui/label";
@@ -91,7 +91,7 @@ interface AlertDialogProps extends BaseProps {
 type customProps = FormConnectedProps | AlertDialogProps
 
 const RenderInput = ({ field, props }: { field: any; props: customProps }) => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = React.useState(false);
 
   switch (props.fieldType) {
     case formFieldTypes.INPUT:
@@ -224,7 +224,7 @@ const RenderInput = ({ field, props }: { field: any; props: customProps }) => {
       return (
         <Select value={field} onValueChange={field.onChange}>
           <SelectTrigger
-            className={props.isDoctorList ? "w-full p-3" : "w-[300px]"}
+            className={props.isDoctorList ? "w-full p-3 cursor-pointer" : "w-[300px] cursor-pointer"}
           >
             <SelectValue placeholder={props.placeholder} />
           </SelectTrigger>
@@ -439,9 +439,10 @@ const CustomFormField = (props: customProps) => {
           }
         >
           {props.fieldType !== formFieldTypes.CHECKBOX && label && (
-            <FormLabel>{label}</FormLabel>
+            <FormLabel className="text-foreground!">{label}</FormLabel>
           )}
           <RenderInput field={field} props={props} />
+          <FormMessage />
         </FormItem>
       )}
     />

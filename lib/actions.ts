@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { UseFormReturn } from "react-hook-form";
-import { newUserSchema, patientMedicalInfo } from "./validation";
+import { adminCredentialForm, doctorCredentialForm, newUserSchema, patientMedicalInfo } from "./validation";
 import z from "zod";
 import axios from "axios";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
@@ -127,4 +127,12 @@ export async function onSubmitUser(
     setError(errorMessage);
     return;
   }
+}
+
+export async function onSubmitAdminCreation(values: z.infer<typeof adminCredentialForm>) {
+
+}
+
+export async function onSubmitDoctorCreation(values: z.infer<typeof doctorCredentialForm>) {
+  
 }

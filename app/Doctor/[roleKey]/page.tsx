@@ -1,4 +1,5 @@
-import { Heart, Stethoscope, Syringe } from "lucide-react";
+import DoctorTable from "@/app/DoctorTable/page";
+import { Heart, HospitalIcon, Stethoscope, Syringe } from "lucide-react";
 
 interface DoctorPageProps {
   params: Promise<{
@@ -9,7 +10,7 @@ interface DoctorPageProps {
 const DOCTOR_ROLE_DATA = {
   doctor: {
     name: "General Practitioner",
-    icon: <Stethoscope className="w-10 h-10 text-blue-600" />,
+    icon: <Stethoscope className="w-7 h-7 text-blue-600" />,
     description:
       "Primary care access panel for general appointments and basic diagnostics.",
     features: [
@@ -23,7 +24,7 @@ const DOCTOR_ROLE_DATA = {
   },
   "doctor-specialist": {
     name: "Cardiologist Specialist",
-    icon: <Heart className="w-10 h-10 text-red-600" />,
+    icon: <Heart className="w-7 h-7 text-red-600" />,
     description:
       "Specialized dashboard for cardiology patients, advanced imaging, and test results.",
     features: [
@@ -37,7 +38,7 @@ const DOCTOR_ROLE_DATA = {
   },
   "nurse-practitioner": {
     name: "Nurse Practitioner (NP)",
-    icon: <Syringe className="w-10 h-10 text-green-600" />,
+    icon: <Syringe className="w-7 h-7 text-green-600" />,
     description:
       "Clinical interface for patient triage, medication administration, and routine check-ups.",
     features: [
@@ -75,8 +76,24 @@ export default async function Doctor({ params }: DoctorPageProps) {
   }
 
   return (
-    <div>
-      Dr {role.name}
+    <div className="flex flex-col gap-10 p-5">
+      <div className="flex justify-between items-center border-4 p-4 border-gray-400 rounded-xl bg-gray-200 text-black">
+        <div className="flex gap-3 items-center">
+          <HospitalIcon />
+          CarePack
+        </div>
+        <div className="flex gap-3 items-center">
+        {role.icon}
+        {role.name}
+        </div>
+      </div>
+      <div className="flex flex-col gap-3">
+        <p className="font-semibold font-serif text-xl">Welcome, {role.name}</p>
+        <p>
+          Start day with Managing your Appointments
+        </p>
+      </div>
+      <DoctorTable />
     </div>
   );
 }
