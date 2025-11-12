@@ -34,8 +34,8 @@ export default function Appointment() {
       preHistory: true,
       doctorName: "",
       reason: "",
-      symptoms: "",
-      allergies: "",
+      symptoms: [],
+      allergies: [],
       past_Medical_History: "",
       family_Medical_History: "",
       expected_Appointment_Date: undefined,
@@ -121,14 +121,17 @@ export default function Appointment() {
                 />
                 {reason == "Disease" && (
                   <div className="flex flex-col gap-10">
-                    <div className="flex justify-between items-center">
-                      <CustomFormField
-                        name="allergies"
-                        control={form.control}
-                        fieldType={formFieldTypes.TEXTAREA}
-                        placeholder="peanut"
-                        label="Allergies (if any):"
-                      />
+                    <div className="flex justify-between items-start flex-row-reverse">
+                      <div className="flex flex-col gap-3">
+                        <CustomFormField
+                          name="allergies"
+                          control={form.control}
+                          fieldType={formFieldTypes.INPUT}
+                          placeholder="peanut"
+                          label="Allergies (if any):"
+                          add="allergy"
+                        />
+                      </div>
                       <CustomFormField
                         name="past_Medical_History"
                         control={form.control}
@@ -137,14 +140,17 @@ export default function Appointment() {
                         label="Past Medical History (if any):"
                       />
                     </div>
-                    <div className="flex justify-between items-center">
-                      <CustomFormField
-                        name="symptoms"
-                        control={form.control}
-                        fieldType={formFieldTypes.TEXTAREA}
-                        placeholder="diarhea"
-                        label="Disease Symptoms:"
-                      />
+                    <div className="flex justify-between items-start flex-row-reverse">
+                      <div className="flex flex-col gap-3 items-end">
+                        <CustomFormField
+                          name="symptoms"
+                          control={form.control}
+                          fieldType={formFieldTypes.INPUT}
+                          placeholder="diarhea"
+                          label="Disease Symptoms:"
+                          add="symptom"
+                        />
+                      </div>
                       <CustomFormField
                         name="family_Medical_History"
                         control={form.control}

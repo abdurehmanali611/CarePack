@@ -27,15 +27,16 @@ export const patientMedicalInfo = z.object({
     .or(z.literal("")),
   reason: z.string().min(1, "Please select your reason").toLowerCase(),
   symptoms: z
-    .string()
-    .min(2, "Please Enter Your symptoms")
-    .toLowerCase()
+    .array(z.string().min(2, "Please Enter Your symptoms").toLowerCase())
     .optional()
     .or(z.literal("")),
   allergies: z
-    .string()
-    .min(2, "Please provide us your allergies (if any)")
-    .toLowerCase()
+    .array(
+      z
+        .string()
+        .min(2, "Please provide us your allergies (if any)")
+        .toLowerCase()
+    )
     .optional()
     .or(z.literal("")),
   past_Medical_History: z
@@ -80,7 +81,7 @@ export const patientMedicalInfo = z.object({
     .min(2, "Please Select an Identity type")
     .toLowerCase(),
   identity_Number: z.string().min(2, "Please Enter a valid Id No"),
-  identity_photo: z.string().min(10, "Please Enter Your scanned ID Image")
+  identity_photo: z.string().min(10, "Please Enter Your scanned ID Image"),
 });
 
 export const doctorCredentialForm = z.object({
@@ -88,12 +89,12 @@ export const doctorCredentialForm = z.object({
   Sex: z.string().min(1, "Please Select his/her sex"),
   Speciality: z.string().min(1, "Please Select the field of Speciality"),
   experienceYear: z.number().min(0, "Please Enter his/her years of Experience"),
-  passKey: z.string().min(6, "Please enter 'Six' digit Passkey")
-})
+  passKey: z.string().min(6, "Please enter 'Six' digit Passkey"),
+});
 
 export const adminCredentialForm = z.object({
   Full_Name: z.string().min(2, "Please Enter the Admin Name"),
   Sex: z.string().min(1, "Please Select the his/her sex"),
   experienceYear: z.number().min(0, "Please Enter his/her year of Experience"),
-  passKey: z.string().min(6, "Please Enter 'Six' digit passkey")
-})
+  passKey: z.string().min(6, "Please Enter 'Six' digit passkey"),
+});

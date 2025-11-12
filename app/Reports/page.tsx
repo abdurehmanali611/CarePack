@@ -91,7 +91,7 @@ export default async function Reports() {
         <Card
           type="Treated"
           count={10}
-          label="Treated Appointments"
+          label="Treated Patients"
           icon="/assets/treated.svg"
         />
       </div>

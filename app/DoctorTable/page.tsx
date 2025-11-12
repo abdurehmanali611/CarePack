@@ -16,63 +16,41 @@ async function getData(): Promise<patient[]> {
   return [
     {
       id: 1,
-      patientName: "Abiy Ahmed",
-      status: "Treated",
-      phoneNumber: "+251943542343",
-      email: "abiyahmed@gmail.com",
-      Doctor: "Dr. Michael Johnson",
-      Disease: "Neural Disease",
+      patientName: "Abdurehman Ali",
+      age: 23,
+      sex: "Male",
+      appointmentTime: "10:00-12:00 AM",
+      scheduleNumber: 1,
     },
     {
       id: 2,
-      patientName: "Mekiya Kheiru",
-      status: "Rescheduled",
-      phoneNumber: "+251934567654",
-      email: "mekiya@gmail.com",
-      Doctor: "Dr. Michael Johnson",
-      Disease: "Neural Disease",
+      patientName: "Yusra Ali",
+      age: 18,
+      sex: "Female",
+      appointmentTime: "10:00-12:00 AM",
+      scheduleNumber: 3,
     },
     {
       id: 3,
-      patientName: "Abdurehman Ali",
-      status: "Treated",
-      phoneNumber: "+251935000642",
-      email: "abdurehmanali611@gmail.com",
-      Doctor: "Dr. Sofia Martinez",
-      Disease: "Dermatology",
+      patientName: "Ali Hussen",
+      age: 50,
+      sex: "Male",
+      appointmentTime: "10:00-12:00 AM",
+      scheduleNumber: 2,
     },
     {
       id: 4,
-      patientName: "Yusra Ali",
-      status: "Rescheduled",
-      phoneNumber: "+251986857711",
-      email: "yusra@gmail.com",
-      Doctor: "Dr. David Kim",
-      Disease: "Orthopedic Surgery",
-    },
-    {
-      id: 5,
-      patientName: "Ali Hussen",
-      status: "Treated",
-      phoneNumber: "+251911979276",
-      email: "alihussen@gmail.com",
-      Doctor: "Dr. Amelia Reed",
-      Disease: "Cardiology",
-    },
-    {
-      id: 6,
       patientName: "Mulunesh Ahmed",
-      status: "Rescheduled",
-      phoneNumber: "+251913692129",
-      email: "mulunesh@gmail.com",
-      Doctor: "Dr. Fatma Al-Sayed",
-      Disease: "Gastroenterology",
+      age: 40,
+      sex: "Female",
+      appointmentTime: "10:00-12:00 AM",
+      scheduleNumber: 3,
     },
   ];
 }
 
 export default function DoctorTable() {
-  const [date, setDate] = useState<Date | undefined>();
+  const [date, setDate] = useState<Date>(new Date());
   const [open, setOpen] = useState(false);
   const [data, setData] = useState<patient[]>([]);
 
@@ -85,10 +63,8 @@ export default function DoctorTable() {
       <div className="flex justify-center self-end w-fit p-5">
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild className="cursor-pointer">
-            <Button>
-              {date
-                ? `${date.getDate()}-${date.getMonth()}-${date.getFullYear()}`
-                : "Select Date"}
+            <Button variant="outline">
+              {date.toDateString()}
               <Calendar1 className="w-8 h-8" />
             </Button>
           </PopoverTrigger>
@@ -98,7 +74,7 @@ export default function DoctorTable() {
               captionLayout="dropdown"
               buttonVariant="ghost"
               onSelect={(value) => {
-                setDate(value);
+                setDate(value!);
                 setOpen(!open);
               }}
             />

@@ -2,7 +2,13 @@
 import Image from "next/image";
 import React from "react";
 import { Control } from "react-hook-form";
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "./ui/form";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "./ui/form";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { Label } from "./ui/label";
@@ -10,7 +16,14 @@ import { Checkbox } from "./ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Calendar } from "./ui/calendar";
 import { Button } from "./ui/button";
-import { AlertTriangle, Calendar1, Mail, Upload, User, User2 } from "lucide-react";
+import {
+  AlertTriangle,
+  Calendar1,
+  Mail,
+  Upload,
+  User,
+  User2,
+} from "lucide-react";
 import { PhoneInput } from "./phone-input";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import {
@@ -25,7 +38,17 @@ import {
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import { CldUploadWidget } from "next-cloudinary";
 import Link from "next/link";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "./ui/alert-dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "./ui/alert-dialog";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "./ui/input-otp";
 
 export enum formFieldTypes {
@@ -59,13 +82,14 @@ interface BaseProps {
   setPassKey?: React.Dispatch<React.SetStateAction<string>>;
   setDialogError?: React.Dispatch<React.SetStateAction<string | null>>;
   handleAlertDialog?: (result: any) => void;
-  passKey?: string
-  dialogError?: string | null
+  passKey?: string;
+  dialogError?: string | null;
+  add?: "allergy" | "symptom";
 }
 
 interface FormConnectedProps extends BaseProps {
-  control: Control<any>
-  name: string
+  control: Control<any>;
+  name: string;
   fieldType:
     | formFieldTypes.INPUT
     | formFieldTypes.TEXTAREA
@@ -84,11 +108,11 @@ interface AlertDialogProps extends BaseProps {
   setPassKey: React.Dispatch<React.SetStateAction<string>>;
   setDialogError: React.Dispatch<React.SetStateAction<string | null>>;
   handleAlertDialog: (result: any) => void;
-  passKey?: string
-  dialogError?: string | null
+  passKey?: string;
+  dialogError?: string | null;
 }
 
-type customProps = FormConnectedProps | AlertDialogProps
+type customProps = FormConnectedProps | AlertDialogProps;
 
 const RenderInput = ({ field, props }: { field: any; props: customProps }) => {
   const [open, setOpen] = React.useState(false);
@@ -99,11 +123,57 @@ const RenderInput = ({ field, props }: { field: any; props: customProps }) => {
         <div className="flex gap-3 items-center">
           {props.icon && <props.icon />}
           <FormControl>
-            <Input
-              {...field}
-              placeholder={props.placeholder}
-              type={props.type}
-            />
+            <div className="flex flex-col gap-2">
+              <Input
+                {...(props.add ? {} : field)}
+                placeholder={props.placeholder}
+                type={props.type}
+                onKeyDown={(e) => {
+                  if (
+                    e.key === "Enter" &&
+                    e.currentTarget.value !== "" &&
+                    props.add
+                  ) {
+                    e.preventDefault();
+                    const newValue = e.currentTarget.value.trim();
+                    const currentArray = Array.isArray(field.value)
+                      ? field.value
+                      : [];
+                    field.onChange([...currentArray, newValue]);
+                    e.currentTarget.value = "";
+                  }
+                }}
+              />
+              {props.add && (
+                <div className="flex flex-col flex-wrap gap-2 max-h-24 overflow-y-auto p-2 border rounded-md">
+                  {(Array.isArray(field.value) ? field.value : []).map(
+                    (a: string, i: number) => (
+                      <span
+                        key={i}
+                        className="px-2 py-1 rounded text-sm flex items-start"
+                      >
+                        {a}
+                        <button
+                          type="button"
+                          className="text-red-500 ml-2 cursor-pointer"
+                          onClick={() => {
+                            const currentArray = Array.isArray(field.value)
+                              ? field.value
+                              : [];
+                            const next = currentArray.filter(
+                              (_: string, idx: number) => idx !== i
+                            );
+                            field.onChange(next);
+                          }}
+                        >
+                          ×
+                        </button>
+                      </span>
+                    )
+                  )}
+                </div>
+              )}
+            </div>
           </FormControl>
         </div>
       );
@@ -222,9 +292,13 @@ const RenderInput = ({ field, props }: { field: any; props: customProps }) => {
 
     case formFieldTypes.SELECT:
       return (
-        <Select value={field} onValueChange={field.onChange}>
+        <Select value={field.value} onValueChange={field.onChange}>
           <SelectTrigger
-            className={props.isDoctorList ? "w-full p-3 cursor-pointer" : "w-[300px] cursor-pointer"}
+            className={
+              props.isDoctorList
+                ? "w-full p-3 cursor-pointer"
+                : "w-[300px] cursor-pointer"
+            }
           >
             <SelectValue placeholder={props.placeholder} />
           </SelectTrigger>
@@ -330,97 +404,97 @@ const CustomFormField = (props: customProps) => {
     return (
       <>
         {props.listdisplay?.map((item) => (
-            <AlertDialog
-              key={item}
-              onOpenChange={(open) => {
-                if (!open) {
-                  if (props.setPassKey) {
-                    props.setPassKey("");
-                  }
-                  if (props.setDialogError) {
-                    props.setDialogError(null);
-                  }
+          <AlertDialog
+            key={item}
+            onOpenChange={(open) => {
+              if (!open) {
+                if (props.setPassKey) {
+                  props.setPassKey("");
                 }
-              }}
-            >
-              <AlertDialogTrigger asChild>
-                <Button
-                  key={item}
-                  variant="link"
-                  className="cursor-pointer text-blue-400 hover:text-red-400"
-                >
-                  {item}
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent className="w-fit">
-                <AlertDialogHeader>
-                  <AlertDialogTitle asChild>
-                    <h4 className="font-serif text-lg font-semibold">
-                      {item} Access Verification
-                    </h4>
-                  </AlertDialogTitle>
-                  <AlertDialogDescription asChild>
-                    <p className="text-sm font-normal">
-                      Please Enter the PassKey
-                    </p>
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                {props.dialogError && (
-                  <div className="flex items-center text-sm text-red-600 border border-red-300 bg-red-50 p-2 rounded-md">
-                    <AlertTriangle className="h-4 w-4 mr-2" />
-                    {props.dialogError}
-                  </div>
-                )}
-                <InputOTP
-                  maxLength={6}
-                  value={props.passKey}
-                  onChange={(e) => {
-                    if (props.setPassKey) props.setPassKey(e)
+                if (props.setDialogError) {
+                  props.setDialogError(null);
+                }
+              }
+            }}
+          >
+            <AlertDialogTrigger asChild>
+              <Button
+                key={item}
+                variant="link"
+                className="cursor-pointer text-blue-400 hover:text-red-400"
+              >
+                {item}
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent className="w-fit">
+              <AlertDialogHeader>
+                <AlertDialogTitle asChild>
+                  <h4 className="font-serif text-lg font-semibold">
+                    {item} Access Verification
+                  </h4>
+                </AlertDialogTitle>
+                <AlertDialogDescription asChild>
+                  <p className="text-sm font-normal">
+                    Please Enter the PassKey
+                  </p>
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              {props.dialogError && (
+                <div className="flex items-center text-sm text-red-600 border border-red-300 bg-red-50 p-2 rounded-md">
+                  <AlertTriangle className="h-4 w-4 mr-2" />
+                  {props.dialogError}
+                </div>
+              )}
+              <InputOTP
+                maxLength={6}
+                value={props.passKey}
+                onChange={(e) => {
+                  if (props.setPassKey) props.setPassKey(e);
+                }}
+              >
+                <InputOTPGroup>
+                  <InputOTPSlot index={0} />
+                </InputOTPGroup>
+                <InputOTPGroup>
+                  <InputOTPSlot index={1} />
+                </InputOTPGroup>
+                <InputOTPGroup>
+                  <InputOTPSlot index={2} />
+                </InputOTPGroup>
+                <InputOTPGroup>
+                  <InputOTPSlot index={3} />
+                </InputOTPGroup>
+                <InputOTPGroup>
+                  <InputOTPSlot index={4} />
+                </InputOTPGroup>
+                <InputOTPGroup>
+                  <InputOTPSlot index={5} />
+                </InputOTPGroup>
+              </InputOTP>
+              <AlertDialogFooter>
+                <AlertDialogCancel
+                  className="cursor-pointer"
+                  onClick={() => {
+                    if (props.setPassKey) props.setPassKey("");
+                    if (props.setDialogError) props.setDialogError(null);
                   }}
                 >
-                  <InputOTPGroup>
-                    <InputOTPSlot index={0} />
-                  </InputOTPGroup>
-                  <InputOTPGroup>
-                    <InputOTPSlot index={1} />
-                  </InputOTPGroup>
-                  <InputOTPGroup>
-                    <InputOTPSlot index={2} />
-                  </InputOTPGroup>
-                  <InputOTPGroup>
-                    <InputOTPSlot index={3} />
-                  </InputOTPGroup>
-                  <InputOTPGroup>
-                    <InputOTPSlot index={4} />
-                  </InputOTPGroup>
-                  <InputOTPGroup>
-                    <InputOTPSlot index={5} />
-                  </InputOTPGroup>
-                </InputOTP>
-                <AlertDialogFooter>
-                  <AlertDialogCancel
-                    className="cursor-pointer"
-                    onClick={() => {
-                      if (props.setPassKey) props.setPassKey("");
-                      if (props.setDialogError) props.setDialogError(null);
-                    }}
-                  >
-                    Cancel
-                  </AlertDialogCancel>
-                  <AlertDialogAction
-                    className="cursor-pointer"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      props.handleAlertDialog?.(item);
-                    }}
-                    disabled={!props.passKey || props.passKey.length < 6}
-                  >
-                    Submit
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          ))}
+                  Cancel
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  className="cursor-pointer"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    props.handleAlertDialog?.(item);
+                  }}
+                  disabled={!props.passKey || props.passKey.length < 6}
+                >
+                  Submit
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        ))}
       </>
     );
   }
@@ -448,6 +522,5 @@ const CustomFormField = (props: customProps) => {
     />
   );
 };
-
 
 export default CustomFormField;
