@@ -50,6 +50,7 @@ import {
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "./ui/input-otp";
+import clsx from "clsx";
 
 export enum formFieldTypes {
   INPUT = "input",
@@ -123,7 +124,11 @@ const RenderInput = ({ field, props }: { field: any; props: customProps }) => {
         <div className="flex gap-3 items-center">
           {props.icon && <props.icon />}
           <FormControl>
-            <div className="flex flex-col gap-2">
+            <div
+              className={clsx("flex flex-col gap-2", {
+                "w-full": props.type === "name",
+              })}
+            >
               <Input
                 {...(props.add ? {} : field)}
                 placeholder={props.placeholder}
@@ -198,7 +203,6 @@ const RenderInput = ({ field, props }: { field: any; props: customProps }) => {
           >
             <Checkbox
               id="toggle"
-              defaultChecked
               onCheckedChange={(value) => {
                 field.onChange(value);
                 if (props.preHistory) props.preHistory(!!value);
@@ -306,28 +310,33 @@ const RenderInput = ({ field, props }: { field: any; props: customProps }) => {
             <SelectGroup>
               <SelectLabel>{props.label}</SelectLabel>
               {props.isDoctorList
-                ? props.listdisplay?.map((item) => (
-                    <Tooltip key={item.id}>
-                      <TooltipTrigger className="flex flex-col gap-3">
-                        <SelectItem
-                          key={item.id}
-                          value={item.name}
-                          className="p-2 w-[900px]"
-                        >
-                          <Image
-                            src={item.image}
-                            alt={item.name || "Icon"}
-                            width={24}
-                            height={24}
-                            loading="eager"
-                            className="rounded-full"
-                          />
-                          <span className="font-semibold">{item.name}</span>
-                        </SelectItem>
-                      </TooltipTrigger>
-                      <TooltipContent>{item.title}</TooltipContent>
-                    </Tooltip>
-                  ))
+                ? props.listdisplay?.map(
+                    (item) =>
+                      item.roleType === "Doctor" && (
+                        <Tooltip key={item._id}>
+                          <TooltipTrigger className="flex flex-col gap-3">
+                            <SelectItem
+                              key={item._id}
+                              value={item.Full_Name}
+                              className="p-2 w-[900px]"
+                            >
+                              <Image
+                                src={item.image}
+                                alt={item.Full_Name || "Icon"}
+                                width={24}
+                                height={24}
+                                loading="eager"
+                                className="rounded-full"
+                              />
+                              <span className="font-semibold">
+                                {item.Full_Name}
+                              </span>
+                            </SelectItem>
+                          </TooltipTrigger>
+                          <TooltipContent>{item.Speciality}</TooltipContent>
+                        </Tooltip>
+                      )
+                  )
                 : props.listdisplay?.map((item) => (
                     <SelectItem key={item.id} value={item.name}>
                       {item.name}
@@ -349,7 +358,7 @@ const RenderInput = ({ field, props }: { field: any; props: customProps }) => {
                 sources: ["local", "url", "camera"],
                 multiple: false,
                 maxFiles: 1,
-                clientAllowedFormats: ["png", "jpeg", "webp"],
+                clientAllowedFormats: ["png", "jpeg", "webp", "jfif"],
               }}
             >
               {({ open }) => (
@@ -370,22 +379,24 @@ const RenderInput = ({ field, props }: { field: any; props: customProps }) => {
                   <Image
                     src={props.previewUrl}
                     alt="Uploaded Image"
-                    width={200}
-                    height={150}
+                    width={props.type !== "credential" ? 200 : 100}
+                    height={props.type !== "credential" ? 150 : 100}
                     loading="eager"
                     className="rounded-md object-cover"
                   />
                 </div>
-                <p className="text-sm text-gray-500 mt-2 text-center">
-                  <Link
-                    href={field.value}
-                    target="blank"
-                    className="font-semibold font-serif text-lg hover:underline hover:text-blue-400 hover:cursor-pointer"
-                  >
-                    {field.value}
-                  </Link>{" "}
-                  Successfully uploaded to Cloudinary
-                </p>
+                {props.type !== "credential" && (
+                  <p className="text-sm text-gray-500 mt-2 text-center">
+                    <Link
+                      href={field.value}
+                      target="blank"
+                      className="font-semibold font-serif text-lg hover:underline hover:text-blue-400 hover:cursor-pointer"
+                    >
+                      {field.value}
+                    </Link>{" "}
+                    Successfully uploaded to Cloudinary
+                  </p>
+                )}
               </div>
             )}
           </div>

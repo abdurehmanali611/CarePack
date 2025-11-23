@@ -1,6 +1,6 @@
 "use client";
-import { columns, patient } from "./columns";
-import { DataTable } from "./data-table";
+import { patient } from "./columns";
+import { DataTableClientWrapper } from "./DataTableClientWrapper";
 import { Calendar1 } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -9,54 +9,68 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import { fetchingCredential } from "@/lib/actions";
 
 async function getData(): Promise<patient[]> {
-  // Fetch data from your API here.
-  return [
-    {
-      id: 1,
-      patientName: "Abdurehman Ali",
-      age: 23,
-      sex: "Male",
-      appointmentTime: "10:00-12:00 AM",
-      scheduleNumber: 1,
-    },
-    {
-      id: 2,
-      patientName: "Yusra Ali",
-      age: 18,
-      sex: "Female",
-      appointmentTime: "10:00-12:00 AM",
-      scheduleNumber: 3,
-    },
-    {
-      id: 3,
-      patientName: "Ali Hussen",
-      age: 50,
-      sex: "Male",
-      appointmentTime: "10:00-12:00 AM",
-      scheduleNumber: 2,
-    },
-    {
-      id: 4,
-      patientName: "Mulunesh Ahmed",
-      age: 40,
-      sex: "Female",
-      appointmentTime: "10:00-12:00 AM",
-      scheduleNumber: 3,
-    },
-  ];
+  const data = (await fetchingCredential()) || [];
+  return data;
 }
 
-export default function DoctorTable() {
+export default function DoctorTable({ name }: { name: string }) {
   const [date, setDate] = useState<Date>(new Date());
   const [open, setOpen] = useState(false);
   const [data, setData] = useState<patient[]>([]);
 
-  useState(() => {
-    getData().then((res) => setData(res));
-  });
+  const refetchData = useCallback(async () => {
+    const res = await getData();
+    const filteredData = res.filter(
+      (patient) => patient.Full_Name === name
+    );
+    const flattenedData = filteredData.flatMap(
+      (doctor) =>
+        doctor.patientInfos
+          ?.filter((item) => {
+            const appDate = new Date(item.AppointmentDate);
+            const today = new Date(date);
+            console.log(
+              appDate,
+              today,
+              appDate.toDateString(),
+              today.toDateString()
+            );
+
+            return (
+              (appDate.toDateString() === today.toDateString() &&
+                (item.status !== "Healed" && item.status !== "specialityChange"))
+            );
+          })
+          .map((patientinfo) => ({
+            ...doctor,
+            ...patientinfo,
+            patientName: patientinfo.name,
+            age: patientinfo.age,
+            reason: patientinfo.reason,
+            symptoms: patientinfo.symptoms,
+            allergies: patientinfo.allergies,
+            past_Medical_History: patientinfo.past_Medical_History,
+            family_Medical_History: patientinfo.family_Medical_History,
+            AppointmentDate: patientinfo.AppointmentDate,
+            status: patientinfo.status,
+            schedulingNumber: patientinfo.schedulingNumber,
+            reeasonChange: patientinfo.reasonChange,
+            recommend: patientinfo.recommend,
+            doctorId: doctor._id
+          })) || []
+    );
+    setData(flattenedData);
+  }, [date, name]);
+
+  useEffect(() => {
+    (async () => {
+      refetchData();
+    })()
+  }, [refetchData]);
 
   return (
     <div className="flex flex-col gap-2">
@@ -82,7 +96,7 @@ export default function DoctorTable() {
         </Popover>
       </div>
       <div className="container mx-auto py-3">
-        <DataTable columns={columns} data={data} />
+        <DataTableClientWrapper data={data ?? []} refresh={refetchData} />
       </div>
     </div>
   );

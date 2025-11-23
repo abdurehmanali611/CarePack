@@ -1,9 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { UseFormReturn } from "react-hook-form";
-import { adminCredentialForm, doctorCredentialForm, newUserSchema, patientMedicalInfo } from "./validation";
+import {
+  CredentialForm,
+  newUserSchema,
+  patientMedicalInfo,
+  updateCredentialForm,
+} from "./validation";
 import z from "zod";
 import axios from "axios";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import { credentialFormType } from "@/app/Credential/page";
 
 interface cloudinarySuccessResult {
   event: "success";
@@ -12,10 +18,19 @@ interface cloudinarySuccessResult {
   };
 }
 
+interface statusCount {
+  Scheduled: number;
+  Pending: number;
+  Cancelled: number;
+  specialityChange: number;
+  Healed: number;
+}
+
 export const handleUploadSuccess = (
   result: unknown,
   form: UseFormReturn<any>,
-  setPreviewUrl: (url: string | null) => void
+  setPreviewUrl: (url: string | null) => void,
+  formField: string
 ) => {
   if (
     typeof result == "object" &&
@@ -30,14 +45,14 @@ export const handleUploadSuccess = (
     const typedResult = result as cloudinarySuccessResult;
     const secured_url = typedResult.info.secure_url;
 
-    form.setValue("identity_photo", secured_url, { shouldValidate: true });
+    form.setValue(formField, secured_url, { shouldValidate: true });
     setPreviewUrl(secured_url);
   } else {
     console.error(
       "Cloudinary Upload Failed or returned an unexpected structure."
     );
 
-    form.setValue("identity_photo", "");
+    form.setValue(formField, "");
     setPreviewUrl(null);
   }
 };
@@ -48,7 +63,8 @@ export async function onSubmitMedical(
   form: UseFormReturn<any>,
   setPreviewUrl: (url: string | null) => void,
   setMessage: (message: string | null) => void,
-  setError: (error: string | null) => void
+  setError: (error: string | null) => void,
+  router: AppRouterInstance
 ) {
   console.log(values);
   try {
@@ -57,6 +73,8 @@ export async function onSubmitMedical(
     const payload = {
       ...values,
       userId: userId,
+      status: "Pending",
+      schedulingNumber: 0,
     };
     await axios
       .post("http://localhost:4000/medical", payload, {
@@ -74,6 +92,7 @@ export async function onSubmitMedical(
         setMessage("Appointment Request Sent Successfully");
         setTimeout(() => {
           setMessage(null);
+          router.back()
         }, 3000);
       });
   } catch (error: unknown) {
@@ -129,10 +148,533 @@ export async function onSubmitUser(
   }
 }
 
-export async function onSubmitAdminCreation(values: z.infer<typeof adminCredentialForm>) {
-
+export async function onSubmitAdminCreation(
+  values: z.infer<typeof CredentialForm>,
+  form: UseFormReturn<credentialFormType>,
+  setIsLoading: (value: true | false) => void,
+  setMessage: (value: string | null) => void,
+  setErrorMessage: (value: string | null) => void,
+  setPreviewUrl: (value: string | null) => void
+) {
+  try {
+    setIsLoading(true);
+    const role = "Admin";
+    const payload = {
+      ...values,
+      roleType: role,
+    };
+    await axios
+      .post("http://localhost:4000/credential", payload, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => res.data)
+      .then((data) => {
+        console.log(data);
+        form.reset();
+        setMessage("Admin Registered Successfully");
+        setIsLoading(false);
+        setPreviewUrl(null)
+        setTimeout(() => {
+          setMessage(null);
+        }, 3000);
+      });
+  } catch (error: unknown) {
+    let errorMessage = "An unknown error happened";
+    if (axios.isAxiosError(error)) {
+      errorMessage = error.response?.data?.message || error.message;
+    } else if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    console.log(errorMessage);
+    setErrorMessage(errorMessage);
+    setTimeout(() => {
+      setErrorMessage(null);
+    }, 3000);
+    return;
+  }
 }
 
-export async function onSubmitDoctorCreation(values: z.infer<typeof doctorCredentialForm>) {
+export async function onSubmitDoctorCreation(
+  values: z.infer<typeof CredentialForm>,
+  form: UseFormReturn<credentialFormType>,
+  setIsLoading: (value: true | false) => void,
+  setErrorMessage: (value: string | null) => void,
+  setMessage: (value: string | null) => void,
+  setPreviewUrl: (value: string | null) => void
+) {
+  try {
+    setIsLoading(true);
+    const payload = {
+      ...values,
+      roleType: "Doctor",
+    };
+    await axios
+      .post("http://localhost:4000/credential", payload, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => res.data)
+      .then((data) => {
+        console.log(data);
+        form.reset();
+        setMessage(`${data.Full_Name} registered successfully`);
+        setIsLoading(false);
+        setPreviewUrl(null)
+        setTimeout(() => {
+          setMessage(null);
+        }, 2000);
+      });
+  } catch (error: unknown) {
+    let errorMessage = "An unknown error happened";
+    if (axios.isAxiosError(error)) {
+      errorMessage = error.response?.data?.message || error.message;
+    } else if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    console.log(errorMessage);
+    setErrorMessage(errorMessage);
+    setTimeout(() => {
+      setErrorMessage(null);
+    }, 3000);
+    return;
+  }
+}
+
+export async function fetchingCredential() {
+  try {
+    const response = await axios.get("http://localhost:4000/credential", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data;
+  } catch (error: unknown) {
+    let errorMessage = "An Unknown Error is happened";
+    if (axios.isAxiosError(error)) {
+      errorMessage = error.response?.data?.message || error.message;
+    } else if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    console.log(errorMessage);
+    return [];
+  }
+}
+
+export async function updatingCredential(
+  values: z.infer<typeof updateCredentialForm>,
+  _id: string
+) {
+  try {
+    await axios
+      .patch(`http://localhost:4000/credential/${_id}`, values, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => res.data)
+      .then(() => {});
+  } catch (error: unknown) {
+    let errorMessage = "An unknown error happened";
+    if (axios.isAxiosError(error)) {
+      errorMessage = error.response?.data?.message || error.message;
+    } else if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    console.log(errorMessage);
+    return;
+  }
+}
+
+export async function DeletingCredential(_id: string) {
+  try {
+    await axios
+      .delete(`http://localhost:4000/credential/${_id}`)
+      .then((res) => res.data)
+      .then(() => {});
+  } catch (error: unknown) {
+    let errorMessage = "An unknown error happened";
+    if (axios.isAxiosError(error)) {
+      errorMessage = error.response?.data?.message || error.message;
+    } else if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    console.log(errorMessage);
+    return;
+  }
+}
+
+export async function fetchingMedical() {
+  try {
+    const response = await axios.get("http://localhost:4000/medical", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = response.data;
+    return data;
+  } catch (error: unknown) {
+    let errorMessage = "An unknown error happened";
+    if (axios.isAxiosError(error)) {
+      errorMessage = error.response?.data?.message || error.message;
+    } else if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    console.log(errorMessage);
+    return [];
+  }
+}
+
+export async function fetchingUsers() {
+  try {
+    const response = await axios.get("http://localhost:4000/users", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = response.data;
+    return data;
+  } catch (error: unknown) {
+    let errorMessage = "An unknown error happened";
+    if (axios.isAxiosError(error)) {
+      errorMessage = error.response?.data?.message || error.message;
+    } else if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    console.log(errorMessage);
+    return [];
+  }
+}
+
+export async function getStatusCount(): Promise<statusCount> {
+  const medicals = (await fetchingMedical()) || [];
+
+  const counts: statusCount = {
+    Scheduled: 0,
+    Pending: 0,
+    Cancelled: 0,
+    specialityChange: 0,
+    Healed: 0,
+  };
+
+  medicals.forEach((item: any) => {
+    if (item.status === "Scheduled") counts.Scheduled += 1;
+    else if (item.status === "Pending") counts.Pending += 1;
+    else if (item.status === "Cancelled") counts.Cancelled += 1;
+    else if (item.status === "specialityChange") counts.specialityChange += 1;
+    else if (item.status === "Healed") counts.Healed += 1;
+    else return;
+  });
+  return counts;
+}
+
+async function updateUserStatus(userId: string, selectedDoctor: string) {
+  try {
+    const response = await axios.patch(
+      `http://localhost:4000/medical/${userId}`,
+      { status: "Scheduled", Doctor: selectedDoctor, schedulingNumber:+1 },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const data = response.data;
+    return data;
+  } catch (error: unknown) {
+    let errorMessage = "An unknown error happened";
+    if (axios.isAxiosError(error)) {
+      errorMessage = error.response?.data?.message || error.message;
+    } else if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    console.log(errorMessage);
+    throw error;
+  }
+}
+
+export async function handleSchedule(
+  row: any,
+  date: Date,
+  selectedDoctor: string
+) {
+  const id = row.original._id;
+  const selected = row.original.doctors.filter(
+    (item: any) => item.name === selectedDoctor
+  );
   
+  const doctorId = selected?.map((item: any) => {
+    return item.id;
+  });
+  
+  try {
+    const response = await axios.patch(
+      `http://localhost:4000/credential/${doctorId}`,
+      {
+        AppointmentDates: [date.toISOString()],
+        patientInfos: [
+          {
+            name: row.original.patientName,
+            age: row.original.age,
+            reason: row.original.reason,
+            symptoms: row.original.symptoms && row.original.symptoms,
+            allergies: row.original.allergies && row.original.allergies,
+            past_Medical_History:
+              row.original.past_Medical_History &&
+              row.original.past_Medical_History,
+            family_Medical_History:
+              row.original.family_Medical_History &&
+              row.original.family_Medical_History,
+            AppointmentDate: date.toISOString(),
+            doctorName: selectedDoctor,
+            status: "Scheduled",
+            schedulingNumber: 1,
+            userId: id
+          },
+        ],
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const data = response.data;
+    await updateUserStatus(id, selectedDoctor);
+    return data;
+  } catch (error: unknown) {
+    let errorMessage = "An unknown error happened";
+    if (axios.isAxiosError(error)) {
+      errorMessage = error.response?.data?.message || error.message;
+    } else if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    console.log('Error details:', errorMessage);
+    throw error;
+  }
+}
+
+export async function handleCanceling(rowId: string, reason: string) {
+  try {
+    const response = await axios.patch(
+      `http://localhost:4000/medical/${rowId}`,
+      { status: "Cancelled", cancellingReason: reason },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const data = response.data;
+    return data;
+  } catch (error: unknown) {
+    let errorMessage = "An unknown error happened";
+    if (axios.isAxiosError(error)) {
+      errorMessage = error.response?.data?.message || error.message;
+    } else if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    console.log(errorMessage);
+    throw error;
+  }
+}
+
+export async function verifyCredentials(passKey: string) {
+  try {
+    const response = await axios.post("http://localhost:4000/credential/verify", {passKey}, {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+     if (!response.data) {
+      throw new Error('Authentication failed');
+    }
+    return await response.data;
+  } catch (error) {
+    console.log(error)
+    return { 
+      success: false, 
+      error: "Network error. Please try again." 
+    };
+  }
+}
+
+export async function getUserByName(name: string) {
+  try {
+    const response = await axios.get(`http://localhost:4000/credential/name/${name}`, {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+    if (!response.data) {
+      throw new Error("User not found")
+    }
+    return await response.data
+  } catch (error) {
+    console.log(error)
+    return { 
+      success: false, 
+      error: "Failed to fetch user data" 
+    };
+  }
+}
+
+async function updateUserMedication(userId: string, value: string | null) {
+
+  try {
+    const response = await axios.patch(`http://localhost:4000/medical/${userId}`, {
+      status: "Healed",
+      Disease: value
+    }, {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+    const data = response.data
+    return data
+  } catch (error: unknown) {
+    let errorMessage = "An unknown error happened"
+    if (axios.isAxiosError(error)) {
+      errorMessage = error.response?.data?.message || error.message
+    }else if(error instanceof Error) {
+      errorMessage = error.message
+    }
+    console.log(errorMessage)
+    return
+  }
+}
+
+export async function handleCured(value: string | null, userId: string, id: string) {
+  
+  try {
+    const response = await axios.patch(`http://localhost:4000/credential/patientInfos/${id}`, {
+      status: "Healed"
+    }, {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+    const data = response.data
+    await updateUserMedication(userId, value)
+    return data
+  } catch (error: unknown) {
+    let errorMessage = "An unknown error happened"
+    if (axios.isAxiosError(error)) {
+      errorMessage = error.response?.data?.message || error.message
+    }else if(error instanceof Error) {
+      errorMessage = error.message
+    }
+    console.log(errorMessage)
+    return
+  }
+}
+
+export async function handleReschedule(value: Date, userId: string, id: string, doctorId: string) {
+  try {
+    const doctorResponse = await axios.get(`http://localhost:4000/credential/id/${doctorId}`);
+    const doctorData = doctorResponse.data;
+
+    const currentPatientInfo = doctorData.patientInfos?.find((patient: any) => patient._id === id);
+    
+    if (!currentPatientInfo) {
+      throw new Error(`Patient info with id ${id} not found in doctor's patient list`);
+    }
+
+    const oldAppointmentDate = currentPatientInfo.AppointmentDate;
+
+    const response = await axios.patch(`http://localhost:4000/credential/patientInfos/${id}`, {
+      status: "Scheduled",
+      schedulingNumber: currentPatientInfo.schedulingNumber + 1,
+      AppointmentDate: value
+    }, {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+
+    const data = response.data;
+
+    await axios.patch(`http://localhost:4000/medical/${userId}`, {
+      schedulingNumber: currentPatientInfo.schedulingNumber + 1
+    }, {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+
+    if (oldAppointmentDate && doctorData.AppointmentDates) {
+      const oldDate = new Date(oldAppointmentDate);
+      
+      const updatedAppointmentDates = doctorData.AppointmentDates
+        .filter((date: any) => {
+          const currentDate = new Date(date);
+          return currentDate.getTime() !== oldDate.getTime();
+        })
+        .concat(value); 
+      
+      await axios.patch(`http://localhost:4000/credential/appointment-dates/${doctorId}`, {
+        AppointmentDates: updatedAppointmentDates
+      }, {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+    }
+
+    return data;
+  } catch (error: unknown) {
+    let errorMessage = "An unknown error happened";
+    if (axios.isAxiosError(error)) {
+      errorMessage = error.response?.data?.message || error.message;
+      console.log("Axios error details:", error.response?.data);
+    } else if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    console.log("❌ Reschedule error:", errorMessage);
+    return;
+  }
+}
+
+export async function handleSpecialityChange(value: string | null, speciality: string | null, userId: string, id: string) {
+
+  try {
+    const response = await axios.patch(`http://localhost:4000/credential/patientInfos/${id}`, {
+      status: "specialityChange",
+      reasonChange: value,
+      recommend: speciality
+    }, {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+    const data = response.data
+    await axios.patch(`http://localhost:4000/medical/${userId}`, {
+      status: "specialityChange"
+    }, {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }).then((res) => res.data).then((data) => { return data }).catch((error) => {
+      let errorMessage = "An unknown error happened"
+      if (axios.isAxiosError(error)) {
+        errorMessage = error.response?.data?.message || error.message
+      }else if(error instanceof Error) {
+        errorMessage = error.message
+      }
+      console.log(errorMessage)
+      return
+    })
+    return data
+  } catch (error: unknown) {
+    let errorMessage = "An unknown error happened"
+    if (axios.isAxiosError(error)) {
+      errorMessage = error.response?.data?.message || error.message
+    }else if(error instanceof Error) {
+      errorMessage = error.message
+    }
+    console.log(errorMessage)
+    return
+  }
 }

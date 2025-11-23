@@ -18,17 +18,10 @@ import { useCallback, useState } from "react";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { newUserSchema } from "@/lib/validation";
 import CustomFormField, { formFieldTypes } from "./customFormField";
-import { onSubmitUser } from "@/lib/actions";
-
-const PASSKEY_ROLE_MAP: Record<string, string> = {
-  // Admin Keys
-  "432100": "general-manager",
-  "432101": "group-leader",
-  // Doctor Keys
-  "123456": "doctor", // General Practitioner
-  "654321": "doctor-specialist", // Cardiologist Specialist
-  "789012": "nurse-practitioner", // Nurse Practitioner
-};
+import {
+  onSubmitUser,
+  verifyCredentials,
+} from "@/lib/actions";
 
 export default function NewUser() {
   const form = useForm<z.infer<typeof newUserSchema>>({
@@ -52,30 +45,36 @@ export default function NewUser() {
   const router = useRouter();
 
   const handlePassKeySubmit = useCallback(
-    (item: string) => {
-      const roleKey = PASSKEY_ROLE_MAP[passKey];
-
-      if (!roleKey) {
-        setDialogError("Invalid PassKey. Please Try Again");
+    async (item: string) => {
+      if (!passKey.trim()) {
+        setDialogError("Please Enter a PassKey");
         return;
       }
+      try {
+        const result = await verifyCredentials(passKey);
 
-      if (
-        item == "Admin" &&
-        (roleKey == "general-manager" || roleKey == "group-leader")
-      ) {
-        setDialogError(null);
-        setPassKey("");
-        router.push(`/Admin/${roleKey}`);
-      } else if (
-        item == "Doctor" &&
-        (roleKey.startsWith("doctor") || roleKey.startsWith("nurse"))
-      ) {
-        setDialogError(null);
-        setPassKey("");
-        router.push(`/Doctor/${roleKey}`);
-      } else {
-        setDialogError(`Access Denied. PassKey is not authorized for ${item}`);
+        if (!result.success) {
+          setDialogError(result.error || "Invalid PassKey. Please Try Again");
+          return;
+        }
+
+        const user = result.user
+        const formattedName = user.fullName.toLowerCase().replace(/\s+/g, '-')
+
+        if (item === "Admin" && (user.roleType === "Admin" || user.roleType === "Manager")) {
+          setDialogError(null)
+          setPassKey("")
+          router.push(`/Admin/${formattedName}`)
+        } else if(item === "Doctor" && user.roleType === "Doctor") {
+          setDialogError(null)
+          setPassKey("")
+          router.push(`/Doctor/${formattedName}`)
+        }else {
+          setDialogError(`Access Denied. Role type ${user.roleType} is not supported`)
+        }
+      } catch (error) {
+        console.log(error);
+        setDialogError("Authentication failed. Please try again.");
       }
     },
     [passKey, router]
@@ -122,6 +121,7 @@ export default function NewUser() {
                 fieldType={formFieldTypes.INPUT}
                 placeholder="Abiy Ahmed"
                 icon={User}
+                type="name"
               />
               <div className="flex justify-between items-center">
                 <CustomFormField
@@ -184,15 +184,15 @@ export default function NewUser() {
           <p>
             &copy; <span>2025 CarePack</span>
           </p>
-           <CustomFormField 
-           fieldType={formFieldTypes.ALERTDIALOG}
-           listdisplay={["Doctor", "Admin"]}
-           setPassKey={setPassKey}
-           passKey={passKey}
-           setDialogError={setDialogError}
-           dialogError={dialogError}
-           handleAlertDialog={handlePassKeySubmit}
-           />
+          <CustomFormField
+            fieldType={formFieldTypes.ALERTDIALOG}
+            listdisplay={["Doctor", "Admin"]}
+            setPassKey={setPassKey}
+            passKey={passKey}
+            setDialogError={setDialogError}
+            dialogError={dialogError}
+            handleAlertDialog={handlePassKeySubmit}
+          />
         </CardFooter>
       </Card>
     </div>

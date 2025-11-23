@@ -1,10 +1,10 @@
 import z from "zod";
 
 export const newUserSchema = z.object({
-  Full_Name: z.string().min(2, "Please Enter Your name").toLowerCase(),
+  Full_Name: z.string().min(2, "Please Enter Your name"),
   email: z.email("Please Enter a valid Email"),
   phoneNumber: z.string().min(8, "Please Enter Valid Phone Number"),
-  gender: z.string().min(1, "Please select your gender").toLowerCase(),
+  gender: z.string().min(1, "Please select your gender"),
   birthDate: z
     .union([z.date(), z.undefined()])
     .refine((val) => val !== undefined, {
@@ -12,8 +12,7 @@ export const newUserSchema = z.object({
     }),
   emergencyContactName: z
     .string()
-    .min(2, "Please enter a valid name")
-    .toLowerCase(),
+    .min(2, "Please enter a valid name"),
   emergencyContactPhone: z.string().min(8, "Please enter a valid Phone Number"),
 });
 
@@ -22,12 +21,11 @@ export const patientMedicalInfo = z.object({
   doctorName: z
     .string()
     .min(2, "Please Select a Doctor")
-    .toLowerCase()
     .optional()
     .or(z.literal("")),
-  reason: z.string().min(1, "Please select your reason").toLowerCase(),
+  reason: z.string().min(1, "Please select your reason"),
   symptoms: z
-    .array(z.string().min(2, "Please Enter Your symptoms").toLowerCase())
+    .array(z.string().min(2, "Please Enter Your symptoms"))
     .optional()
     .or(z.literal("")),
   allergies: z
@@ -35,20 +33,17 @@ export const patientMedicalInfo = z.object({
       z
         .string()
         .min(2, "Please provide us your allergies (if any)")
-        .toLowerCase()
     )
     .optional()
     .or(z.literal("")),
   past_Medical_History: z
     .string()
     .min(2, "Please provide us a valid Past Medical History (if any)")
-    .toLowerCase()
     .optional()
     .or(z.literal("")),
   family_Medical_History: z
     .string()
     .min(2, "please provide us a Family Medical history (if Relevant)")
-    .toLowerCase()
     .optional()
     .or(z.literal("")),
   expected_Appointment_Date: z
@@ -59,42 +54,30 @@ export const patientMedicalInfo = z.object({
   comments_Or_Notes: z
     .string()
     .min(2, "Please provide us some notes/comments to be considered (if any)")
-    .toLowerCase()
     .optional()
     .or(z.literal("")),
-  insurance_Provider: z
-    .string()
-    .min(2, "Please tell us the Insurance Providers name")
-    .optional()
-    .or(z.literal("")),
-  insurance_policy_Id: z
-    .string()
-    .min(1, "Please tell us about your Insurance ID")
-    .optional()
-    .or(z.literal("")),
-  insurance_Or_Private: z
-    .string()
-    .min(3, "Please Select how to get our service")
-    .toLowerCase(),
   identity_Type: z
     .string()
-    .min(2, "Please Select an Identity type")
-    .toLowerCase(),
+    .min(2, "Please Select an Identity type"),
   identity_Number: z.string().min(2, "Please Enter a valid Id No"),
   identity_photo: z.string().min(10, "Please Enter Your scanned ID Image"),
 });
 
-export const doctorCredentialForm = z.object({
+export const CredentialForm = z.object({
   Full_Name: z.string().min(2, "Please Enter Doctor's Name"),
   Sex: z.string().min(1, "Please Select his/her sex"),
-  Speciality: z.string().min(1, "Please Select the field of Speciality"),
-  experienceYear: z.number().min(0, "Please Enter his/her years of Experience"),
+  Speciality: z.string().min(1, "Please Select the field of Speciality").optional().or(z.literal("")),
+  experienceYear: z.coerce.number().min(0, "Please Enter his/her years of Experience"),
   passKey: z.string().min(6, "Please enter 'Six' digit Passkey"),
+  image: z.string().min(10, "Please upload an image")
 });
 
-export const adminCredentialForm = z.object({
-  Full_Name: z.string().min(2, "Please Enter the Admin Name"),
-  Sex: z.string().min(1, "Please Select the his/her sex"),
-  experienceYear: z.number().min(0, "Please Enter his/her year of Experience"),
-  passKey: z.string().min(6, "Please Enter 'Six' digit passkey"),
+export const updateCredentialForm = z.object({
+  Full_Name: z.string().min(2, "Please Enter Doctor's Name"),
+  Sex: z.string().min(1, "Please Select his/her sex"),
+  Speciality: z.string().min(1, "Please Select the field of Speciality").optional().or(z.literal("")),
+  experienceYear: z.coerce.number().min(0, "Please Enter his/her years of Experience"),
+  passKey: z.string().min(6, "Please enter 'Six' digit Passkey"),
+  roleType: z.string().min(1, "Please Select the role type"),
+  image: z.string().min(10, "Please Upload an image here")
 });

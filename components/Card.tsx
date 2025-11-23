@@ -2,7 +2,7 @@ import clsx from "clsx";
 import Image from "next/image";
 
 interface propTypes {
-  type: "Scheduled" | "Pending" | "Cancelled" | "Treated";
+  type: "Scheduled" | "Pending" | "Cancelled" | "Treated" | "Specialist Change";
   count: number;
   label: string;
   icon: string;
@@ -14,7 +14,7 @@ const Card = ({ type, count, label, icon }: propTypes) => {
         "flex flex-1 flex-col gap-6 rounded-2xl bg-cover p-3 shadow-lg mx-3",
         {
           "bg-[url('/assets/appointments-bg.png')]": type === "Scheduled" || type == "Treated",
-          "bg-[url('/assets/pending-bg.png')]": type == "Pending",
+          "bg-[url('/assets/pending-bg.png')]": type == "Pending" || type == "Specialist Change",
           "bg-[url('/assets/cancelled-bg.png')]": type == "Cancelled",
         }
       )}>

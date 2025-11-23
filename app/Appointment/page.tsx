@@ -10,23 +10,31 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { AlertCircleIcon, CheckCircle2Icon } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Identifications, Physicians } from "@/constants";
+import { Identifications } from "@/constants";
 import { patientMedicalInfo } from "@/lib/validation";
 import CustomFormField, { formFieldTypes } from "@/components/customFormField";
-import { handleUploadSuccess, onSubmitMedical } from "@/lib/actions";
+import { fetchingCredential, handleUploadSuccess, onSubmitMedical } from "@/lib/actions";
+import { useRouter } from "next/navigation";
+
+interface doctors {
+  Full_Name: string
+  image: string
+  Speciality: string
+}
 
 export default function Appointment() {
-  const [preHistory, setPreHistory] = useState(true);
+  const [preHistory, setPreHistory] = useState(false);
   const [reason, setReason] = useState("");
-  const [type, setType] = useState("");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+  const [fetchedData, setFetchedData] = useState<doctors[]>([])
 
   const form = useForm<z.infer<typeof patientMedicalInfo>>({
     resolver: zodResolver(patientMedicalInfo),
@@ -40,14 +48,17 @@ export default function Appointment() {
       family_Medical_History: "",
       expected_Appointment_Date: undefined,
       comments_Or_Notes: "",
-      insurance_Provider: "",
-      insurance_Or_Private: "",
-      insurance_policy_Id: "",
       identity_Type: "",
       identity_Number: "",
       identity_photo: "",
     },
   });
+
+  useEffect(() => {
+    (async () => {
+      await fetchingCredential().then((res) => setFetchedData(res || []))
+    })()
+  }, [])
 
   if (message !== null) {
     return (
@@ -86,7 +97,8 @@ export default function Appointment() {
                   form,
                   setPreviewUrl,
                   setMessage,
-                  setError
+                  setError,
+                  router
                 )
               )}
               className="flex flex-col gap-5"
@@ -108,7 +120,7 @@ export default function Appointment() {
                     isDoctorList
                     label="Primary Physician Name:"
                     placeholder="select the physician"
-                    listdisplay={Physicians}
+                    listdisplay={fetchedData}
                   />
                 )}
                 <CustomFormField
@@ -161,7 +173,7 @@ export default function Appointment() {
                     </div>
                   </div>
                 )}
-                <div className="flex justify-between items-center px-5">
+                <div className="flex justify-between items-start px-5 flex-row-reverse">
                   <CustomFormField
                     name="expected_Appointment_Date"
                     control={form.control}
@@ -170,40 +182,12 @@ export default function Appointment() {
                     label="Expected Appointment Date:"
                   />
                   <CustomFormField
-                    name="insurance_Or_Private"
-                    control={form.control}
-                    fieldType={formFieldTypes.RADIO_BUTTON}
-                    listdisplay={["Private", "Insurance"]}
-                    label="Processing Type:"
-                    typeInsurance={setType}
-                  />
-                </div>
-                <div className="flex justify-between items-center px-5">
-                  <CustomFormField
                     name="comments_Or_Notes"
                     control={form.control}
                     fieldType={formFieldTypes.TEXTAREA}
                     placeholder="better to be in afternoon"
                     label="Comments to be Considered:"
                   />
-                  {type == "Insurance" && (
-                    <div className="flex flex-col gap-5">
-                      <CustomFormField
-                        name="insurance_Provider"
-                        control={form.control}
-                        fieldType={formFieldTypes.INPUT}
-                        placeholder="EIP"
-                        label="Insurance Provider:"
-                      />
-                      <CustomFormField
-                        name="insurance_policy_Id"
-                        control={form.control}
-                        fieldType={formFieldTypes.INPUT}
-                        placeholder="1234"
-                        label="Insurance Policy ID:"
-                      />
-                    </div>
-                  )}
                 </div>
               </div>
               <div className="flex flex-col gap-5 mt-24">
@@ -231,7 +215,7 @@ export default function Appointment() {
                   fieldType={formFieldTypes.IMAGE_UPLOADER}
                   label="Scanned ID Photo"
                   handleCloudinary={(result) =>
-                    handleUploadSuccess(result, form, setPreviewUrl)
+                    handleUploadSuccess(result, form, setPreviewUrl, "identity_photo")
                   }
                   previewUrl={previewUrl}
                 />
