@@ -35,6 +35,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { useTranslations } from "next-intl";
 
 interface updateCredentialType {
   id: string;
@@ -60,6 +61,7 @@ export default function UpdateCredetial({
     null
   );
   const [open, setOpen] = useState(false);
+  const t = useTranslations("tableAction")
 
   async function fetchCredential() {
     await fetchingCredential().then((res) => setFetchedData(res || []));
@@ -104,9 +106,9 @@ export default function UpdateCredetial({
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Update {Full_Name} informations</DialogTitle>
+            <DialogTitle>{t("tableAction")} {Full_Name} {t("informations")}</DialogTitle>
             <DialogDescription>
-              Here you can Update {Full_Name} informations
+              {t("Here you can Update")} {Full_Name} {t("informations")}
             </DialogDescription>
           </DialogHeader>
           <Form {...form}>
@@ -118,7 +120,7 @@ export default function UpdateCredetial({
                 name="Full_Name"
                 control={form.control}
                 fieldType={formFieldTypes.INPUT}
-                label="Full Name:"
+                label={t("Full Name:")}
                 icon={User}
                 type="name"
               />
@@ -126,14 +128,14 @@ export default function UpdateCredetial({
                 name="Sex"
                 control={form.control}
                 fieldType={formFieldTypes.RADIO_BUTTON}
-                label="Gender:"
+                label={t("Gender:")}
                 listdisplay={["Male", "Female", "Other"]}
               />
               <CustomFormField
                 name="Speciality"
                 control={form.control}
                 fieldType={formFieldTypes.SELECT}
-                label="Select Speciality:"
+                label={t("Select Speciality:")}
                 listdisplay={Specialities}
               />
               <div className="flex justify-between items-center">
@@ -141,14 +143,14 @@ export default function UpdateCredetial({
                   name="experienceYear"
                   control={form.control}
                   fieldType={formFieldTypes.INPUT}
-                  label="Year of Experience:"
+                  label={t("Year of Experience:")}
                   type="number"
                 />
                 <CustomFormField
                   name="passKey"
                   control={form.control}
                   fieldType={formFieldTypes.INPUT}
-                  label="PassKey:"
+                  label={t("PassKey:")}
                 />
               </div>
               {(roleTypeCheck === undefined || roleType == "Admin") && (
@@ -163,7 +165,7 @@ export default function UpdateCredetial({
                           onValueChange={(value) => field.onChange(value)}
                           className="flex gap-3 items-center"
                         >
-                          {["Admin", "Doctor"].map((item) => (
+                          {[`${t("Admin")}`, `${t("Doctor")}`].map((item) => (
                             <div key={item} className="flex gap-3 items-center">
                               <RadioGroupItem
                                 value={item}
@@ -179,7 +181,7 @@ export default function UpdateCredetial({
                 />
               )}
               <Button className="cursor-pointer" type="submit">
-                Update
+                {t("Update")}
               </Button>
             </form>
           </Form>
@@ -193,19 +195,19 @@ export default function UpdateCredetial({
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Deleting {Full_Name}</AlertDialogTitle>
+            <AlertDialogTitle>{t("Deleting")} {Full_Name}</AlertDialogTitle>
           </AlertDialogHeader>
-          <p>Are you sure you want to Delete {Full_Name} informations</p>
+          <p>{t("Are you sure you want to Delete")} {Full_Name} {t("informations")}</p>
           <AlertDialogFooter>
             <AlertDialogCancel className="cursor-pointer">
-              Cancel
+              {t("Cancel")}
             </AlertDialogCancel>
             <AlertDialogAction
               asChild
               onClick={handleDelete}
               className="cursor-pointer"
             >
-              <Button variant="destructive">Delete</Button>
+              <Button variant="destructive">{t("Delete")}</Button>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

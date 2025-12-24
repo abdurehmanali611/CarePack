@@ -51,6 +51,7 @@ import {
 } from "./ui/alert-dialog";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "./ui/input-otp";
 import clsx from "clsx";
+import { useTranslations } from "next-intl";
 
 export enum formFieldTypes {
   INPUT = "input",
@@ -117,6 +118,7 @@ type customProps = FormConnectedProps | AlertDialogProps;
 
 const RenderInput = ({ field, props }: { field: any; props: customProps }) => {
   const [open, setOpen] = React.useState(false);
+  const t = useTranslations("form")
 
   switch (props.fieldType) {
     case formFieldTypes.INPUT:
@@ -210,10 +212,10 @@ const RenderInput = ({ field, props }: { field: any; props: customProps }) => {
             />
             <div className="grid gap-1.5 font-normal">
               <p className="text-sm leading-none font-medium">
-                History with US
+                {t("History with US")}
               </p>
               <p className="text-muted-foreground text-sm">
-                Do you have a history with us ?{" "}
+                {t("Do you have a history with us ?")}
               </p>
             </div>
           </Label>
@@ -229,7 +231,7 @@ const RenderInput = ({ field, props }: { field: any; props: customProps }) => {
               className="w-fit justify-between ml-6 font-normal cursor-pointer"
             >
               <Calendar1 className="mr-2 h-4 w-4" />
-              {field.value ? field.value.toDateString() : "Select Date"}
+              {field.value ? field.value.toDateString() : `${t("Select Date")}`}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">
@@ -272,9 +274,6 @@ const RenderInput = ({ field, props }: { field: any; props: customProps }) => {
             if (props.reason) {
               if (item === "CheckUp") props.reason("CheckUp");
               else if (item === "Disease") props.reason("Disease");
-            } else if (props.typeInsurance) {
-              if (item === "Insurance") props.typeInsurance("Insurance");
-              else if (item === "Private") props.typeInsurance("Private");
             }
           }}
           value={field.value}
@@ -287,7 +286,7 @@ const RenderInput = ({ field, props }: { field: any; props: customProps }) => {
                 className="cursor-pointer"
               />
               <Label htmlFor={item} className="cursor-pointer">
-                {item}
+                {t(`${item}`)}
               </Label>
             </div>
           ))}
@@ -301,7 +300,7 @@ const RenderInput = ({ field, props }: { field: any; props: customProps }) => {
             className={
               props.isDoctorList
                 ? "w-full p-3 cursor-pointer"
-                : "w-[300px] cursor-pointer"
+                : "w-75 cursor-pointer"
             }
           >
             <SelectValue placeholder={props.placeholder} />
@@ -318,7 +317,7 @@ const RenderInput = ({ field, props }: { field: any; props: customProps }) => {
                             <SelectItem
                               key={item._id}
                               value={item.Full_Name}
-                              className="p-2 w-[900px]"
+                              className="p-2 w-225"
                             >
                               <Image
                                 src={item.image}
@@ -369,7 +368,7 @@ const RenderInput = ({ field, props }: { field: any; props: customProps }) => {
                   className="flex items-center gap-2 cursor-pointer"
                 >
                   <Upload className="w-4 h-4" />
-                  {props.previewUrl ? "Change Photo" : "Choose File"}
+                  {props.previewUrl ? `${t("Change Photo")}` : `${t("Choose File")}`}
                 </Button>
               )}
             </CldUploadWidget>
@@ -394,7 +393,7 @@ const RenderInput = ({ field, props }: { field: any; props: customProps }) => {
                     >
                       {field.value}
                     </Link>{" "}
-                    Successfully uploaded to Cloudinary
+                    {t("Successfully uploaded to Cloudinary")}
                   </p>
                 )}
               </div>
@@ -411,6 +410,7 @@ const RenderInput = ({ field, props }: { field: any; props: customProps }) => {
 };
 
 const CustomFormField = (props: customProps) => {
+  const t = useTranslations("form")
   if (props.fieldType === formFieldTypes.ALERTDIALOG) {
     return (
       <>
@@ -441,12 +441,12 @@ const CustomFormField = (props: customProps) => {
               <AlertDialogHeader>
                 <AlertDialogTitle asChild>
                   <h4 className="font-serif text-lg font-semibold">
-                    {item} Access Verification
+                    {item} {t("Access Verification")}
                   </h4>
                 </AlertDialogTitle>
                 <AlertDialogDescription asChild>
                   <p className="text-sm font-normal">
-                    Please Enter the PassKey
+                    {t("Please Enter the PassKey")}
                   </p>
                 </AlertDialogDescription>
               </AlertDialogHeader>
@@ -490,7 +490,7 @@ const CustomFormField = (props: customProps) => {
                     if (props.setDialogError) props.setDialogError(null);
                   }}
                 >
-                  Cancel
+                  {t("Cancel")}
                 </AlertDialogCancel>
                 <AlertDialogAction
                   className="cursor-pointer"
@@ -500,7 +500,7 @@ const CustomFormField = (props: customProps) => {
                   }}
                   disabled={!props.passKey || props.passKey.length < 6}
                 >
-                  Submit
+                  {t("Submit")}
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>

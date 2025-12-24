@@ -1,5 +1,4 @@
 "use client";
-
 import { ColumnDef } from "@tanstack/react-table";
 import Image from "next/image";
 
@@ -32,15 +31,15 @@ export type patient = {
   patientInfos?: PatientInfo[];
 };
 
-export const columns: ColumnDef<patient>[] = [
+export const columns=(t: (key: string) => string): ColumnDef<patient>[] => [
   {
     accessorKey: "id",
-    header: () => <div className="font-semibold font-serif">ID</div>,
+    header: () => <div className="font-semibold font-serif">{t("ID")}</div>,
     cell: ({ row }) => <div>{row.index + 1}</div>,
   },
   {
     accessorKey: "image",
-    header: () => <div>Image</div>,
+    header: () => <div>{t("Image")}</div>,
     cell: ({ row }) => {
       return (
         <Image
@@ -56,20 +55,20 @@ export const columns: ColumnDef<patient>[] = [
   },
   {
     accessorKey: "Full_Name",
-    header: () => <div>Full Name</div>,
+    header: () => <div>{t("Full Name")}</div>,
   },
   {
     accessorKey: "Sex",
-    header: () => <div className="font-semibold font-serif">Sex</div>,
+    header: () => <div className="font-semibold font-serif">{t("Sex")}</div>,
   },
   {
     accessorKey: "Speciality",
-    header: () => <div className="font-semibold font-serif">Speciality</div>,
+    header: () => <div className="font-semibold font-serif">{t("Speciality")}</div>,
   },
   {
     accessorKey: "experienceYear",
     header: () => (
-      <div className="font-semibold font-serif">Experience Year</div>
+      <div className="font-semibold font-serif">{t("Experience Year")}</div>
     ),
     cell: ({ row }) => (
       <h2 className="text-center">{row.getValue("experienceYear")}</h2>
@@ -78,11 +77,11 @@ export const columns: ColumnDef<patient>[] = [
   {
     accessorKey: "AppointmentDates",
     header: () => (
-      <div className="font-semibold font-serif">Appointment Dates</div>
+      <div className="font-semibold font-serif">{t("Appointment Dates")}</div>
     ),
     cell: ({ row }) => {
       const dates = row.original.AppointmentDates ?? [];
-      if (!dates.length) return <div>No Appointment</div>;
+      if (!dates.length) return <div>{t("No Appointment")}</div>;
 
       return (
         <ul className="space-y-1">
@@ -97,65 +96,65 @@ export const columns: ColumnDef<patient>[] = [
   },
   {
     accessorKey: "patientInfos",
-    header: () => <div className="font-semibold font-serif">Patient Info</div>,
+    header: () => <div className="font-semibold font-serif">{t("Patient Info")}</div>,
     cell: ({ row }) => {
       const infos = row.original.patientInfos ?? [];
-      if (!infos.length) return <div>No Info Recorded</div>;
+      if (!infos.length) return <div>{t("No Info Recorded")}</div>;
 
       return (
         <div className="space-y-2">
           {infos.map((info, i) => (
             <div key={i} className="border p-1 rounded-md text-xs">
               <p>
-                <span className="font-semibold">Name:</span> {info.name}
+                <span className="font-semibold">{t("Name:")}</span> {info.name}
               </p>
               <p>
-                <span className="font-semibold">Age:</span> {info.age}
+                <span className="font-semibold">{t("Age:")}</span> {info.age}
               </p>
               <p>
-                <span className="font-semibold">Doctor:</span> {info.doctorName}
+                <span className="font-semibold">{t("Doctor:")}</span> {info.doctorName}
               </p>
               <p>
-                <span className="font-semibold">Reason:</span> {info.reason}
+                <span className="font-semibold">{t("Reason:")}</span> {info.reason}
               </p>
               <p>
-                <span className="font-semibold">Appointment:</span>{" "}
+                <span className="font-semibold">{t("Appointment:")}</span>{" "}
                 {new Date(info.AppointmentDate).toLocaleDateString()}
               </p>
 
               <p>
-                <span className="font-semibold">Symptoms:</span>{" "}
+                <span className="font-semibold">{t("Symptoms:")}</span>{" "}
                 {info.symptoms.join(", ")}
               </p>
               <p>
-                <span className="font-semibold">Allergies:</span>{" "}
+                <span className="font-semibold">{t("Allergies:")}</span>{" "}
                 {info.allergies.join(", ")}
               </p>
               <p>
-                <span className="font-semibold">Past History:</span>{" "}
+                <span className="font-semibold">{t("Past History:")}</span>{" "}
                 {info.past_Medical_History}
               </p>
               <p>
-                <span className="font-semibold">Family History:</span>{" "}
+                <span className="font-semibold">{t("Family History:")}</span>{" "}
                 {info.family_Medical_History}
               </p>
               <p>
-                <span className="font-semibold">Status:</span> {info.status}
+                <span className="font-semibold">{t("Status:")}</span> {info.status}
               </p>
               {info.status === "Scheduled" && (
                 <p>
-                  <span className="font-semibold">Scheduling Number:</span>{" "}
+                  <span className="font-semibold">{t("Scheduling Number:")}</span>{" "}
                   {info.schedulingNumber}
                 </p>
               )}
               {info.status === "specialityChange" && (
                 <div>
                   <p>
-                    <span className="font-semibold">Reason:</span>{" "}
+                    <span className="font-semibold">{t("Reason:")}</span>{" "}
                     {info.reasonChange}
                   </p>
                   <p>
-                    <span className="font-semibold">Recommended to:</span>{" "}
+                    <span className="font-semibold">{t("Recommended to:")}</span>{" "}
                     {info.recommend}
                   </p>
                 </div>

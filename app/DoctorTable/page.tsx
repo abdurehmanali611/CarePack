@@ -68,7 +68,7 @@ export default function DoctorTable({ name }: { name: string }) {
 
   useEffect(() => {
     (async () => {
-      refetchData();
+      await refetchData();
     })()
   }, [refetchData]);
 

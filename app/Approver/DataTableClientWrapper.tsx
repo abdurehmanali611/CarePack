@@ -3,10 +3,13 @@
 import { useMemo } from "react";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
+import { useTranslations } from "next-intl";
 
 export function DataTableClientWrapper({ data, refresh }: any) {
 
-  const memoizedColumns = useMemo(() => columns(refresh), [refresh])
+  const t = useTranslations("Approver")
+
+  const memoizedColumns = useMemo(() => columns(refresh, t), [refresh, t])
   
   return <DataTable columns={memoizedColumns} data={data}/>
 }

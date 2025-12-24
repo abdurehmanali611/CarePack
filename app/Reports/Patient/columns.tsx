@@ -1,5 +1,4 @@
 "use client";
-
 import { ColumnDef } from "@tanstack/react-table";
 
 export type patient = {
@@ -28,50 +27,50 @@ export type patient = {
   phoneNumber: string
 };
 
-export const columns: ColumnDef<patient>[] = [
+export const columns=(t: (key: string) => string): ColumnDef<patient>[] => [
   {
     accessorKey: "id",
-    header: () => <div className="font-semibold font-serif">ID</div>,
+    header: () => <div className="font-semibold font-serif">{t("ID")}</div>,
     cell: ({row}) => <div>{row.index + 1}</div>
   },
   {
     accessorKey: "patientName",
-    header: () => <div>Patient Name</div>,
+    header: () => <div>{t("Patient Name")}</div>,
   },
   {
     accessorKey: "age",
-    header: () => <div>Age</div>,
+    header: () => <div>{t("Age")}</div>,
   },
   {
     accessorKey: "email",
-    header: () => <div>Email</div>,
+    header: () => <div>{t("Email")}</div>,
   },
   {
     accessorKey: "phoneNumber",
-    header: () => <div className="font-semibold font-serif">Phone Number</div>,
+    header: () => <div className="font-semibold font-serif">{t("Phone Number")}</div>,
   },
   {
     accessorKey: "doctorName",
-    header: () => <div className="font-semibold font-serif">Previous Physician Name</div>,
+    header: () => <div className="font-semibold font-serif">{t("Previous Physician Name")}</div>,
     cell: ({row}) => <h2 className="self-center">{row.getValue("doctorName")}</h2>
   },
   {
     accessorKey: "Doctor",
-    header: () => <div className="font-semibold font-serif">Current Doctor</div>,
+    header: () => <div className="font-semibold font-serif">{t("Current Doctor")}</div>,
     cell: ({row}) => <h2 className="self-center">{row.getValue("Doctor") ? row.getValue("Doctor") : "Not Scheduled"}</h2>
   },
   {
     accessorKey: "Disease",
-    header: () => <div className="font-semibold font-serif">Disease</div>,
+    header: () => <div className="font-semibold font-serif">{t("Disease")}</div>,
     cell: ({row}) => <h2 className="self-center">{row.getValue("Disease") ? row.getValue("Disease") : "Not Treated"}</h2>
   },
   {
     accessorKey: "status",
-    header: () => <div className="font-semibold font-serif">Status</div>,
+    header: () => <div className="font-semibold font-serif">{t("Status")}</div>,
   },
   {
     accessorKey: "schedulingNumber",
-    header: () => <div className="font-semibold font-serif">Scheduling Number</div>,
+    header: () => <div className="font-semibold font-serif">{t("Scheduling Number")}</div>,
     cell: ({row}) => <h2 className="text-center">{row.getValue("schedulingNumber")}</h2>
   },
 ];

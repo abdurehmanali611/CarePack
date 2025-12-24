@@ -1,59 +1,55 @@
-import { columns, patient } from "./columns";
-import { DataTable } from "./data-table";
+"use client";
+import { fetchingCredential } from "@/lib/actions";
+import { DataTableClientWrapper } from "./DataTableClientWrapper";
+import { useCallback, useEffect, useState } from "react";
+import { patient } from "./columns";
 
 async function getData(): Promise<patient[]> {
-  // Fetch data from your API here.
-  return [
-    {
-      id: 1,
-      patientName: "Abdurehman Ali",
-      age: 20,
-      sex: "Male",
-      currentDoctor: "Dr. Alex Petrov",
-      reason: "Not Here",
-      speciality: "Psychiatry",
-      recommendedSpeciality: "Neurology"
-    },
-    {
-      id: 2,
-      patientName: "Yusra Ali",
-      age: 18,
-      sex: "Female",
-      currentDoctor: "Dr. Elena Rossi",
-      reason: "Not Here",
-      speciality: "Ophthalmology",
-      recommendedSpeciality: "Dermatology"
-    },
-    {
-      id: 3,
-      patientName: "Mulunesh Ahmed",
-      age: 40,
-      sex: "Female",
-      currentDoctor: "Dr. Sanjay Patel",
-      reason: "Not Here",
-      speciality: "Internal Medicine",
-      recommendedSpeciality: "Orthopedic Surgery"
-    },
-    {
-      id: 4,
-      patientName: "Ali Hussen",
-      age: 50,
-      sex: "Male",
-      currentDoctor: "Dr. Chloe Dupont",
-      reason: "Not Here",
-      speciality: "Oncology",
-      recommendedSpeciality: "Cardiology"
-    },
-  ];
+  const data = (await fetchingCredential()) ?? [];
+  return data;
 }
 
-export default async function SpecialityChange() {
-  const data = await getData();
+export default function SpecialityChange() {
+  const [data, setData] = useState<patient[]>([]);
+
+  const refetchData = useCallback(async () => {
+    const res = await getData();
+    const flattenedData = res.flatMap((doctor) =>
+      doctor.patientInfos
+        ?.filter((item) => item.status === "specialityChange")
+        .map((patientinfo) => ({
+          ...doctor, 
+          ...patientinfo, 
+          patientName: patientinfo.name,
+          age: patientinfo.age,
+          reason: patientinfo.reason,
+          symptoms: patientinfo.symptoms,
+          allergies: patientinfo.allergies,
+          past_Medical_History: patientinfo.past_Medical_History,
+          family_Medical_History: patientinfo.family_Medical_History,
+          status: patientinfo.status,
+          schedulingNumber: patientinfo.schedulingNumber,
+          reasonChange: patientinfo.reasonChange,
+          recommend: patientinfo.recommend,
+          doctorName: doctor.Full_Name,
+          doctorSpeciality: doctor.Speciality,
+          doctorDocumentId: doctor._id,
+          patientInfoId: patientinfo._id, 
+        })) || []
+    );
+    setData(flattenedData)
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      await refetchData()
+    })()
+  }, [refetchData])
 
   return (
     <div className="flex flex-col gap-5">
       <div className="container mx-auto py-3">
-        <DataTable columns={columns} data={data} />
+        <DataTableClientWrapper data={data ?? []} refresh={refetchData} />
       </div>
     </div>
   );

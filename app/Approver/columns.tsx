@@ -133,7 +133,13 @@ function useSelection() {
   return context;
 }
 
-const SpecialityCell = ({ row }: { row: any }) => {
+const SpecialityCell = ({
+  row,
+  t,
+}: {
+  row: any;
+  t: (key: string) => string;
+}) => {
   const { selectedSpecialities, setSelectedSpeciality } = useSelection();
   const selectedSpeciality = selectedSpecialities[row.original._id] || "";
 
@@ -145,11 +151,11 @@ const SpecialityCell = ({ row }: { row: any }) => {
       }}
     >
       <SelectTrigger className="cursor-pointer">
-        <SelectValue placeholder="Select Speciality..." />
+        <SelectValue placeholder={t("Select Speciality")} />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
-          <SelectLabel>Speciality</SelectLabel>
+          <SelectLabel>{t("Speciality")}</SelectLabel>
           {row.original.specialities.map((item: string) => (
             <SelectItem key={item} value={item}>
               {item}
@@ -161,7 +167,7 @@ const SpecialityCell = ({ row }: { row: any }) => {
   );
 };
 
-const DoctorsCell = ({ row }: { row: any }) => {
+const DoctorsCell = ({ row, t }: { row: any; t: (key: string) => string }) => {
   const { selectedSpecialities, selectedDoctors, setSelectedDoctor } =
     useSelection();
 
@@ -186,14 +192,14 @@ const DoctorsCell = ({ row }: { row: any }) => {
           <SelectValue
             placeholder={
               selectedSpeciality
-                ? "Select Doctor..."
-                : "Select speciality first"
+                ? `${t("Select Doctor")}`
+                : `${t("Select speciality first")}`
             }
           />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            <SelectLabel>Doctors</SelectLabel>
+            <SelectLabel>{t("Doctors")}</SelectLabel>
             {filteredPhysicians.length > 0 ? (
               filteredPhysicians.map((item: any) => (
                 <Tooltip key={item.name}>
@@ -204,17 +210,17 @@ const DoctorsCell = ({ row }: { row: any }) => {
                     <div className="flex flex-col gap-1 text-sm">
                       <p className="font-bold">{item.name} Schedule</p>
                       <p>
-                        **Dates:**{" "}
+                        {t("**Dates:**")}
                         {item.appDates.length > 0
                           ? item.appDates
                               .map((date: Date) =>
                                 new Date(date).toLocaleDateString()
                               )
                               .join(", ")
-                          : "No scheduled dates."}
+                          : `${t("No scheduled dates")}`}
                       </p>
                       <p>
-                        **Times:**{" "}
+                        {t("**Times:**")}
                         {item.appDates.length > 0
                           ? item.appDates
                               .map((time: Date) =>
@@ -224,7 +230,7 @@ const DoctorsCell = ({ row }: { row: any }) => {
                                 })
                               )
                               .join(", ")
-                          : "No scheduled times."}
+                          : `${t("No scheduled times")}`}
                       </p>
                     </div>
                   </TooltipContent>
@@ -233,8 +239,8 @@ const DoctorsCell = ({ row }: { row: any }) => {
             ) : (
               <div className="px-2 py-1 text-sm text-muted-foreground">
                 {selectedSpeciality
-                  ? "No doctors for selected speciality"
-                  : "Select speciality first"}
+                  ? `${t("No doctors for selected speciality")}`
+                  : `${t("Select speciality first")}`}
               </div>
             )}
           </SelectGroup>
@@ -244,27 +250,30 @@ const DoctorsCell = ({ row }: { row: any }) => {
   );
 };
 
-export const columns = (refresh: () => void): ColumnDef<patient>[] => [
+export const columns = (
+  refresh: () => void,
+  t: (key: string) => string
+): ColumnDef<patient>[] => [
   {
     accessorKey: "id",
-    header: () => <div className="font-semibold font-serif">ID</div>,
+    header: () => <div className="font-semibold font-serif">{t("ID")}</div>,
     cell: ({ row }) => <div>{row.index + 1}</div>,
   },
   {
     accessorKey: "patientName",
-    header: () => <div>Patient Name</div>,
+    header: () => <div>{t("Patient Name")}</div>,
   },
   {
     accessorKey: "age",
-    header: () => <div>Age</div>,
+    header: () => <div>{t("Age")}</div>,
   },
   {
     accessorKey: "sex",
-    header: () => <div>Sex</div>,
+    header: () => <div>{t("Sex")}</div>,
   },
   {
     accessorKey: "expected_Appointment_Date",
-    header: () => <div>Expected Date</div>,
+    header: () => <div>{t("Expected Date")}</div>,
     cell: ({ row }) => (
       <div>
         {new Date(row.getValue("expected_Appointment_Date")).toDateString()}
@@ -273,32 +282,36 @@ export const columns = (refresh: () => void): ColumnDef<patient>[] => [
   },
   {
     id: "Detail",
-    header: () => <div>Detail</div>,
+    header: () => <div>{t("Detail")}</div>,
     cell: ({ row }) => {
       return (
         <Dialog>
           <DialogTrigger asChild className="cursor-pointer">
-            <Button variant="outline" size="sm">Show Detail</Button>
+            <Button variant="outline" size="sm">
+              {t("Show Detail")}
+            </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>{row.getValue("patientName")} Details</DialogTitle>
+              <DialogTitle>
+                {row.getValue("patientName")} {t("Details")}
+              </DialogTitle>
               <DialogDescription>
-                {row.getValue("patientName")} Information Details
+                {row.getValue("patientName")} {t("Information Details")}
               </DialogDescription>
             </DialogHeader>
             <ul className="flex flex-col gap-3">
               {row.original.doctorName !== "" && (
                 <li className="flex gap-5">
                   <span className="text-red-400 font-semibold font-serif">
-                    Previous Physician:
+                    {t("Previous Physician:")}
                   </span>{" "}
                   {row.original.doctorName}
                 </li>
               )}
               <li className="flex gap-5">
                 <span className="text-red-400 font-semibold font-serif">
-                  Visiting Reason:
+                  {t("Visiting Reason:")}
                 </span>{" "}
                 {row.original.reason}
               </li>
@@ -306,25 +319,25 @@ export const columns = (refresh: () => void): ColumnDef<patient>[] => [
                 <div className="flex flex-col gap-3">
                   <li className="flex gap-5">
                     <span className="text-red-400 font-semibold font-serif">
-                      Symptoms:
+                      {t("Symptoms:")}
                     </span>{" "}
                     {row.original.symptoms.join(", ")}
                   </li>
                   <li className="flex gap-5">
                     <span className="text-red-400 font-semibold font-serif">
-                      Allergies:
+                      {t("Allergies:")}
                     </span>{" "}
                     {row.original.allergies.join(", ")}
                   </li>
                   <li className="flex gap-5">
                     <span className="text-red-400 font-semibold font-serif">
-                      Past Medical History:
+                      {t("Past Medical History:")}
                     </span>{" "}
                     {row.original.past_Medical_History}
                   </li>
                   <li className="flex gap-5">
                     <span className="text-red-400 font-semibold font-serif">
-                      Family Medical History:
+                      {t("Family Medical History:")}
                     </span>{" "}
                     {row.original.family_Medical_History}
                   </li>
@@ -332,25 +345,25 @@ export const columns = (refresh: () => void): ColumnDef<patient>[] => [
               )}
               <li className="flex gap-5">
                 <span className="text-red-400 font-semibold font-serif">
-                  Comments or Notes:
+                  {t("Comments or Notes:")}
                 </span>{" "}
                 {row.original.comments_Or_Notes}
               </li>
               <li className="flex gap-5">
                 <span className="text-red-400 font-semibold font-serif">
-                  ID Type:
+                  {t("ID Type:")}
                 </span>{" "}
                 {row.original.identity_Type}
               </li>
               <li className="flex gap-5">
                 <span className="text-red-400 font-semibold font-serif">
-                  ID Number:
+                  {t("ID Number:")}
                 </span>{" "}
                 {row.original.identity_Number}
               </li>
               <li className="flex flex-col gap-3">
                 <span className="text-red-400 font-semibold font-serif">
-                  Scanned ID Image:
+                  {t("Scanned ID Image:")}
                 </span>{" "}
                 <Image
                   src={row.original.identity_photo}
@@ -369,13 +382,13 @@ export const columns = (refresh: () => void): ColumnDef<patient>[] => [
   },
   {
     id: "specialities",
-    header: () => <div>Speciality</div>,
-    cell: ({ row }) => <SpecialityCell row={row} />,
+    header: () => <div>{t("Speciality")}</div>,
+    cell: ({ row }) => <SpecialityCell row={row} t={t} />,
   },
   {
     id: "doctors",
-    header: () => <div>Doctor</div>,
-    cell: ({ row }) => <DoctorsCell row={row} />,
+    header: () => <div>{t("Doctor")}</div>,
+    cell: ({ row }) => <DoctorsCell row={row} t={t} />,
   },
   {
     accessorKey: "status",
@@ -385,7 +398,7 @@ export const columns = (refresh: () => void): ColumnDef<patient>[] => [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         className="cursor-pointer"
       >
-        Status
+        {t("Status")}
         <ArrowUpDown />
       </Button>
     ),
@@ -427,13 +440,13 @@ export const columns = (refresh: () => void): ColumnDef<patient>[] => [
                 className="cursor-pointer"
                 disabled={!selectedDoctor}
               >
-                <Button>Schedule</Button>
+                <Button>{t("Schedule")}</Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Already There</DialogTitle>
+                  <DialogTitle>{t("Already There")}</DialogTitle>
                   <DialogDescription>
-                    Change the time and Date if necessary
+                    {t("Change the time and Date if necessary")}
                   </DialogDescription>
                 </DialogHeader>
                 <div className="flex justify-between items-center">
@@ -442,12 +455,15 @@ export const columns = (refresh: () => void): ColumnDef<patient>[] => [
                       htmlFor="date"
                       className="font-serif font-semibold text-xl "
                     >
-                      Date:
+                      {t("Date:")}
                     </label>
                     <input
                       type="date"
                       name="appDate"
-                      value={appDate ?? ""}
+                      value={
+                        appDate ??
+                        row.original.expected_Appointment_Date.toString()
+                      }
                       onChange={(e) => setAppDate(e.target.value)}
                       className="w-fit p-2 border-2 rounded-xl cursor-pointer"
                     />
@@ -457,12 +473,18 @@ export const columns = (refresh: () => void): ColumnDef<patient>[] => [
                       htmlFor="Time"
                       className="font-serif font-semibold text-xl "
                     >
-                      Time:
+                      {t("Time:")}
                     </label>
                     <input
                       type="time"
                       name="appTime"
-                      value={appTime ?? ""}
+                      value={
+                        appTime ??
+                        row.original.expected_Appointment_Date
+                          .toString()
+                          .split("T")[1]
+                          .slice(0, 5)
+                      }
                       onChange={(e) => setAppTime(e.target.value)}
                       className="w-fit p-2 border-2 rounded-xl cursor-pointer"
                     />
@@ -477,30 +499,30 @@ export const columns = (refresh: () => void): ColumnDef<patient>[] => [
                     clearSelection();
                     setAppDate(undefined);
                     setAppTime(undefined);
-                    toast.success("Appointment Updated Successfully");
+                    toast.success(`${t("Appointment Updated Successfully")}`);
                   }}
                   className="cursor-pointer"
                 >
-                  Schedule
+                  {t("Schedule")}
                 </Button>
               </DialogContent>
             </Dialog>
             <AlertDialog>
               <AlertDialogTrigger asChild className="cursor-pointer">
-                <Button variant="destructive">Cancel</Button>
+                <Button variant="destructive">{t("Cancel")}</Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Cancelling Request</AlertDialogTitle>
+                  <AlertDialogTitle>{t("Cancelling Request")}</AlertDialogTitle>
                   <AlertDialogDescription>
-                    Are you sure you want to Cancel {row.original.patientName}{" "}
-                    request
+                    {t("Are you sure you want to Cancel")}{" "}
+                    {row.original.patientName} {t("request")}
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <div className="flex flex-col gap-3 my-3">
-                  <Label htmlFor="reason">Reason:</Label>
+                  <Label htmlFor="reason">{t("Reason:")}</Label>
                   <Input
-                    placeholder="enter reason..."
+                    placeholder={t("enter reason")}
                     value={reason}
                     onChange={(e) => setReason(e.target.value)}
                     type="text"
@@ -509,25 +531,29 @@ export const columns = (refresh: () => void): ColumnDef<patient>[] => [
                 </div>
                 <AlertDialogFooter>
                   <AlertDialogCancel className="cursor-pointer">
-                    Go back
+                    {t("Go back")}
                   </AlertDialogCancel>
                   <AlertDialogAction
                     onClick={async () => {
                       if (reason === "") {
-                        toast.warning("Please Enter a reason of declining")
-                      }else {
+                        toast.warning(
+                          `${t("Please Enter a reason of declining")}`
+                        );
+                      } else {
                         await handleCanceling(row.original._id, reason);
                         await refresh();
                         setOpen(false);
                         clearSelection();
                         setAppDate(undefined);
                         setAppTime(undefined);
-                        toast.success("Appointment Updated Successfully");
+                        toast.success(
+                          `${t("Appointment Updated Successfully")}`
+                        );
                       }
                     }}
                     className="cursor-pointer"
                   >
-                    Yes, Continue
+                    {t("Yes, Continue")}
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>

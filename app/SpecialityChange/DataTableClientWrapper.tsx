@@ -3,11 +3,16 @@
 import { useMemo } from "react";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
+import { SelectionProvider } from "./selection-context";
 import { useTranslations } from "next-intl";
 
 export function DataTableClientWrapper({ data, refresh }: any) {
-  const t = useTranslations("DoctorTable")
+  const t = useTranslations("SpecialityChange")
   const memoizedColumns = useMemo(() => columns(refresh, t), [refresh, t]);
   
-  return <DataTable columns={memoizedColumns} data={data}/>
+  return (
+    <SelectionProvider>
+      <DataTable columns={memoizedColumns} data={data}/>
+    </SelectionProvider>
+  );
 }

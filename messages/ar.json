@@ -1,0 +1,332 @@
+{
+  "newUser": {
+    "CarePack": "كيرباك",
+    "Hi there 👋": "مرحباً 👋",
+    "Select language": "اختر اللغة",
+    "English": "English",
+    "Amharic": "አማርኛ",
+    "Arabic": "العربية",
+    "Affan Oromo": "Afaan oromoo",
+    "Make Your Appointment in Minute": "احجز موعدك خلال دقيقة",
+    "Full Name:": "الاسم الكامل:",
+    "Abiy Ahmed": "أبي أحمد",
+    "Email:": "البريد الإلكتروني:",
+    "abiyahmed@gmailcom": "abiyahmed@gmail.com",
+    "your phone number": "رقم هاتفك",
+    "Phone Number:": "رقم الهاتف:",
+    "Select Date": "اختر التاريخ",
+    "Birth Date:": "تاريخ الميلاد:",
+    "Gender:": "الجنس:",
+    "responder name": "اسم جهة الاتصال للطوارئ",
+    "Emergency Responder:": "جهة اتصال للطوارئ:",
+    "responder phone": "رقم هاتف جهة الطوارئ",
+    "Responder Phone:": "هاتف الطوارئ:",
+    "Proceeding": "جارٍ المتابعة...",
+    "Proceed": "متابعة",
+    "2025 CarePack": "كيرباك 2025",
+    "Doctor": "طبيب",
+    "Admin": "مسؤول",
+    "Submission Error": "خطأ في الإرسال",
+    "Try Form Again": "أعد محاولة تعبئة النموذج",
+    "Please Enter a PassKey": "الرجاء إدخال مفتاح المرور"
+  },
+  "form": {
+    "History with US": "سجل علاقتك معنا",
+    "Do you have a history with us ?": "هل لديك سجل طبي سابق لدينا؟",
+    "Select Date": "اختر التاريخ",
+    "Change Photo": "تغيير الصورة",
+    "Choose File": "اختر ملفاً",
+    "Successfully uploaded to Cloudinary": "تم الرفع بنجاح إلى Cloudinary",
+    "Access Verification": "التحقق من الدخول",
+    "Please Enter the PassKey": "الرجاء إدخال مفتاح المرور",
+    "Cancel": "إلغاء",
+    "Submit": "إرسال",
+    "Male": "ذكر",
+    "Female": "أنثى",
+    "Other": "آخر",
+    "CheckUp": "فحص طبي شامل",
+    "Disease": "مرض"
+  },
+  "tableAction": {
+    "Update": "تحديث",
+    "informations": "المعلومات",
+    "Here you can Update": "هنا يمكنك تحديث البيانات",
+    "Full Name:": "الاسم الكامل:",
+    "Gender:": "الجنس:",
+    "Select Speciality:": "اختر التخصص:",
+    "Year of Experience:": "سنوات الخبرة:",
+    "PassKey:": "مفتاح المرور:",
+    "Admin": "مسؤول",
+    "Doctor": "طبيب",
+    "Deleting": "جاري الحذف",
+    "Are you sure you want to Delete": "هل أنت متأكد أنك تريد الحذف؟",
+    "Cancel": "إلغاء",
+    "Delete": "حذف"
+  },
+  "Admin": {
+    "Routing Error": "خطأ في التوجيه",
+    "Role key parameter is missing from URL": "معامل الدور مفقود في الرابط.",
+    "User not found": "المستخدم غير موجود",
+    "User data for": "بيانات المستخدم لـ",
+    "couldn't be found": "غير موجودة",
+    "Access Denied": "تم رفض الوصول",
+    "User role": "دور المستخدم",
+    "does not have admin access": "لا يمتلك صلاحيات المسؤول.",
+    "CarePack": "كيرباك",
+    "Welcome,": "مرحباً,",
+    "English": "English",
+    "Amharic": "አማርኛ",
+    "Arabic": "عربي",
+    "Affan Oromo": "Afaan oromoo",
+    "Select language": "اختر اللغة",
+    "Start your day with institutional oversight and strategic planning": "ابدأ يومك بالإشراف المؤسسي والتخطيط الاستراتيجي",
+    "Start your day with team management and operational coordination": "ابدأ يومك بإدارة الفريق والتنسيق التشغيلي",
+    "Manager": "مدير",
+    "Admin": "المسؤول"
+  },
+  "appointment": {
+    "Welcome 👋": "مرحباً 👋",
+    "Complete Your Appointment": "أكمل حجز موعدك",
+    "Medical Information": "المعلومات الطبية",
+    "history": "السجل",
+    "Primary Physician Name:": "اسم الطبيب المعالج:",
+    "select the physician": "اختر الطبيب",
+    "Reason of Visiting:": "سبب الزيارة:",
+    "peanut": "الفول السوداني",
+    "Allergies (if any):": "الحساسية (إن وجدت):",
+    "Tetanus": "الكزاز",
+    "Past Medical History (if any):": "التاريخ الطبي السابق:",
+    "headache": "صداع",
+    "Disease Symptoms:": "أعراض المرض:",
+    "diabets": "السكري",
+    "Family Medical History (if relevant):": "التاريخ الطبي العائلي:",
+    "Select Date": "اختر التاريخ",
+    "Expected Appointment Date:": "تاريخ الموعد المتوقع:",
+    "better to be in afternoon": "يفضل أن يكون في فترة بعد الظهر",
+    "Comments to be Considered:": "ملاحظات يجب أخذها بالاعتبار:",
+    "ID Type:": "نوع الهوية:",
+    "Select ID": "اختر الهوية",
+    "Identity Number:": "رقم الهوية:",
+    "1234": "١٢٣٤",
+    "Scanned ID Photo": "صورة الهوية الممسوحة ضوئياً",
+    "Loading": "جارٍ التحميل...",
+    "Submit": "إرسال"
+  },
+  "Approver": {
+    "Select Speciality": "اختر التخصص...",
+    "Speciality": "التخصص",
+    "Select Doctor": "اختر الطبيب...",
+    "Select speciality first": "اختر التخصص أولاً",
+    "Doctors": "الأطباء",
+    "Dates": "التواريخ",
+    "No scheduled dates": "لا توجد تواريخ مجدولة",
+    "Times": "الأوقات",
+    "No scheduled times": "لا توجد أوقات مجدولة",
+    "No doctors for selected speciality": "لا يوجد أطباء لهذا التخصص",
+    "ID": "الرقم",
+    "Patient Name": "اسم المريض",
+    "Age": "العمر",
+    "Sex": "الجنس",
+    "Expected Date": "التاريخ المتوقع",
+    "Detail": "تفاصيل",
+    "Show Detail": "عرض التفاصيل",
+    "Details": "التفاصيل",
+    "Information Details": "معلومات الحالة",
+    "Previous Physician": "الطبيب السابق",
+    "Visiting Reason": "سبب الزيارة",
+    "Disease": "المرض",
+    "Symptoms": "الأعراض",
+    "Allergies": "الحساسية",
+    "Past Medical History": "السجل الطبي السابق",
+    "Family Medical History": "السجل الطبي العائلي",
+    "Comments or Notes": "ملاحظات",
+    "ID Type": "نوع الهوية",
+    "ID Number": "رقم الهوية",
+    "Scanned ID Image": "صورة الهوية",
+    "Doctor": "الطبيب",
+    "Status": "الحالة",
+    "Schedule": "الجدولة",
+    "Already There": "مجدول مسبقًا",
+    "Change the time and Date if necessary": "عدّل الوقت أو التاريخ إذا لزم",
+    "Date": "التاريخ",
+    "Time": "الوقت",
+    "Appointment Updated Successfully": "تم تحديث الموعد بنجاح",
+    "Cancel": "إلغاء",
+    "Cancelling Request": "جارٍ الإلغاء...",
+    "Are you sure you want to Cancel": "هل أنت متأكد من الإلغاء؟",
+    "request": "الطلب",
+    "Reason": "السبب",
+    "enter reason": "أدخل السبب...",
+    "Go back": "الرجوع",
+    "Please Enter a reason of declining": "يرجى إدخال السبب",
+    "Yes, Continue": "نعم، متابعة"
+  },
+  "NewApp": {
+    "Scheduled Appointments": "المواعيد المجدولة",
+    "Pending Appointments": "المواعيد المعلقة",
+    "Cancelled Appointments": "المواعيد الملغاة",
+    "Healed Appointments": "المواعيد المكتملة",
+    "New Appointment": "موعد جديد",
+    "Specialist Change": "تغيير الاختصاصي",
+    "Update/Delete Credential": "تحديث/حذف أصحاب المصلحة",
+    "Create Credential": "إنشاء أصحاب المصلحة",
+    "Patient Table": "جدول المرضى",
+    "Doctor Table": "جدول الأطباء"
+  },
+  "credential": {
+    "Doctor": "طبيب",
+    "Admin": "مسؤول",
+    "Doctor Credential": "حساب الطبيب",
+    "Enter Doctor info to have an access for the system": "أدخل بيانات الطبيب للوصول للنظام",
+    "Full name:": "الاسم الكامل:",
+    "Abdu Ali": "عبدو علي",
+    "Gender:": "الجنس:",
+    "Doctor Image": "صورة الطبيب",
+    "Speciality:": "التخصص:",
+    "Experience:": "الخبرة:",
+    "PassKey:": "رمز الدخول:",
+    "123456": "١٢٣٤٥٦",
+    "Creating": "جارٍ الإنشاء...",
+    "Create": "إنشاء",
+    "Admin Credential": "حساب المسؤول",
+    "Enter an Admin info to have an access for the system": "أدخل بيانات المسؤول للوصول للنظام",
+    "Admin Image": "صورة المسؤول",
+    "No Creation for the second Admin": "لا يمكن إنشاء مسؤول ثانٍ"
+  },
+  "Doctor": {
+    "Doctor Not Found": "لم يتم العثور على الطبيب",
+    "Doctor profile for": "ملف الطبيب:",
+    "could not be found": "غير موجود.",
+    "Access Denied": "تم رفض الوصول",
+    "This user is not a doctor Role:": "هذا المستخدم ليس طبيبًا. الدور:",
+    "CarePack": "كيرباك",
+    "Medical Doctor": "الطبيب المعالج",
+    "years experience": "سنوات خبرة",
+    "Welcome, Dr": "مرحبًا دكتور",
+    "Start your day with managing your appointments and patient care": "ابدأ يومك بإدارة المواعيد ورعاية المرضى",
+    "English": "English",
+    "Amharic": "አማርኛ",
+    "Arabic": "عربي",
+    "Affan Oromo": "Afaan oromoo",
+    "Select language": "اختر اللغة"
+  },
+  "DoctorTable": {
+    "ID": "المعرف",
+    "Patient Name": "اسم المريض",
+    "Age": "العمر",
+    "Reason": "السبب",
+    "Appointment Date": "تاريخ الموعد",
+    "Appointment Time": "وقت الموعد",
+    "Detail": "تفاصيل",
+    "View Detail": "عرض التفاصيل",
+    "Details": "التفاصيل",
+    "information Details": "تفاصيل المعلومات",
+    "Symptoms": "الأعراض",
+    "Allergies": "الحساسية",
+    "Past Medical History": "التاريخ الطبي السابق",
+    "Family Medical History": "التاريخ الطبي العائلي",
+    "Disease": "المرض",
+    "CheckUp": "فحص طبي",
+    "Status": "الحالة",
+    "Cured": "تم الشفاء",
+    "What was the Disease/Case": "ما هو المرض/الحالة",
+    "Disease name/Checkup": "اسم المرض/الفحص",
+    "Submit": "إرسال",
+    "Patient Data Updated Successfully": "تم تحديث بيانات المريض بنجاح",
+    "Reschedule": "إعادة جدولة",
+    "Set time and Date for the another Schedule": "تعيين التاريخ والوقت لجدول آخر",
+    "Date and Time": "التاريخ والوقت",
+    "Assign Date and Time": "تعيين التاريخ والوقت",
+    "Speciality Change": "تغيير الاختصاص",
+    "Change Specialist": "تغيير الاختصاصي",
+    "Select which specialist you recommend with reason": "اختر الاختصاصي الذي توصي به مع السبب",
+    "Your reason": "سببك",
+    "select Speciality": "اختر الاختصاص",
+    "reason": "السبب...",
+    "select here": "اختر هنا...",
+    "Send": "إرسال",
+    "Cancel": "إلغاء"
+  },
+  "ReportsTable": {
+    "ID": "المعرف",
+    "Image": "الصورة",
+    "Full Name": "الاسم الكامل",
+    "Sex": "الجنس",
+    "Speciality": "الاختصاص",
+    "Experience Year": "سنوات الخبرة",
+    "Appointment Dates": "تواريخ المواعيد",
+    "No Appointment": "لا توجد مواعيد",
+    "Patient Info": "معلومات المريض",
+    "No Info Recorded": "لا توجد معلومات مسجلة",
+    "Name:": "الاسم:",
+    "Age:": "العمر:",
+    "Doctor:": "الطبيب:",
+    "Reason:": "السبب:",
+    "Appointment:": "الموعد:",
+    "Symptoms:": "الأعراض:",
+    "Allergies:": "الحساسية:",
+    "Past History:": "التاريخ السابق:",
+    "Family History:": "التاريخ العائلي:",
+    "Status:": "الحالة:",
+    "Scheduling Number:": "رقم الجدولة:",
+    "Recommended to:": "موصى به لـ:",
+    "Patient Name": "اسم المريض",
+    "Age": "العمر",
+    "Email": "البريد الإلكتروني",
+    "Phone Number": "رقم الهاتف",
+    "Previous Physician Name": "اسم الطبيب السابق",
+    "Current Doctor": "الطبيب الحالي",
+    "Disease": "المرض",
+    "Status": "الحالة",
+    "Scheduling Number": "رقم الجدولة"
+  },
+  "SpecialityChange": {
+    "Loading specialities": "جاري تحميل الاختصاصات...",
+    "Select Speciality": "اختر الاختصاص...",
+    "Speciality": "الاختصاص",
+    "Loading": "جاري التحميل...",
+    "No specialities available": "لا توجد اختصاصات متاحة",
+    "Select Doctor": "اختر الطبيب...",
+    "No doctors available": "لا يوجد أطباء متاحون",
+    "Select speciality first": "اختر الاختصاص أولاً",
+    "Doctors": "الأطباء",
+    "Schedule": "الجدول",
+    "Speciality:": "الاختصاص:",
+    "Experience:": "الخبرة:",
+    "years": "سنوات",
+    "Available Dates:": "تواريخ متاحة:",
+    "No scheduled dates": "لا توجد تواريخ مجدولة.",
+    "No doctors available for selected speciality": "لا يوجد أطباء للاختصاص المحدد",
+    "ID": "المعرف",
+    "Patient Name": "اسم المريض",
+    "Age": "العمر",
+    "Detail": "تفاصيل",
+    "View Detail": "عرض التفاصيل",
+    "Details": "التفاصيل",
+    "information Details": "تفاصيل المعلومات",
+    "Reason": "السبب",
+    "Symptoms": "الأعراض",
+    "Allergies": "الحساسية",
+    "Past Medical History": "التاريخ الطبي السابق",
+    "Family Medical History": "التاريخ الطبي العائلي",
+    "Change Reason": "سبب التغيير",
+    "Recommended Speciality": "الاختصاص الموصى به",
+    "Current Doctor": "الطبيب الحالي",
+    "Change reason": "سبب التغيير",
+    "New Speciality": "الاختصاص الجديد",
+    "New Doctor": "الطبيب الجديد",
+    "Please select a doctor first": "يرجى اختيار طبيب أولاً",
+    "Patient transferred successfully": "تم نقل المريض بنجاح",
+    "Failed to transfer patient:": "فشل في نقل المريض:",
+    "Approve Transfer": "الموافقة على النقل"
+  },
+  "Update": {
+    "ID": "المعرف",
+    "Role": "الدور",
+    "Full Name": "الاسم الكامل",
+    "Sex": "الجنس",
+    "Year of Experience": "سنوات الخبرة",
+    "Speciality": "الاختصاص",
+    "PassKey": "كلمة المرور"
+  }
+}

@@ -23,6 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { fetchingCredential } from "@/lib/actions";
+import { useTranslations } from "next-intl";
 import React, { useEffect, useState } from "react";
 
 interface components {
@@ -61,6 +62,7 @@ export function AlertDoctor({
   setValue2,
 }: components) {
   const [data, setData] = useState<any[]>([]);
+  const t = useTranslations("DoctorTable")
 
   useEffect(() => {
     (async () => {
@@ -76,7 +78,7 @@ export function AlertDoctor({
       <AlertDialogTrigger asChild className="cursor-pointer">
         <Button
           variant={
-            btnName === "Speciality Change" ? "destructive" : "secondary"
+            btnName === `${t("Speciality Change")}` ? "destructive" : "secondary"
           }
         >
           {btnName}
@@ -120,7 +122,7 @@ export function AlertDoctor({
         {btnText && (
           <AlertDialogFooter>
             <AlertDialogCancel className="cursor-pointer">
-              Cancel
+              {t("Cancel")}
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={async () => await ToDo(value)}

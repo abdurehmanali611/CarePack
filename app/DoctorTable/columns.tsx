@@ -50,34 +50,34 @@ export type patient = {
   patientInfos?: PatientInfo[];
 };
 
-export const columns = (refresh: () => void): ColumnDef<patient>[] => [
+export const columns = (refresh: () => void, t: (key: string) => string): ColumnDef<patient>[] => [
   {
     accessorKey: "id",
-    header: () => <div className="font-semibold font-serif">ID</div>,
+    header: () => <div className="font-semibold font-serif">{t("ID")}</div>,
     cell: ({ row }) => <div>{row.index + 1}</div>,
   },
   {
     accessorKey: "patientName",
-    header: () => <div>Patient Name</div>,
+    header: () => <div>{t("Patient Name")}</div>,
   },
   {
     accessorKey: "age",
-    header: () => <div>Age</div>,
+    header: () => <div>{t("Age")}</div>,
   },
   {
     accessorKey: "reason",
-    header: () => <div>Reason</div>,
+    header: () => <div>{t("Reason")}</div>,
   },
   {
     accessorKey: "AppointmentDate",
-    header: () => <div>Appointment Date</div>,
+    header: () => <div>{t("Appointment Date")}</div>,
     cell: ({ row }) => (
       <div>{new Date(row.getValue("AppointmentDate")).toDateString()}</div>
     ),
   },
   {
     id: "AppointmentTime",
-    header: () => <div>Appointment Time</div>,
+    header: () => <div>{t("Appointment Time")}</div>,
     cell: ({ row }) => {
       const original = row.original as any;
       const appDate = new Date(original.AppointmentDate);
@@ -93,33 +93,33 @@ export const columns = (refresh: () => void): ColumnDef<patient>[] => [
   },
   {
     id: "Detail",
-    header: () => <div>Detail</div>,
+    header: () => <div>{t("Detail")}</div>,
     cell: ({ row }) => {
       const original = row.original as any;
       return original.reason === "Disease" ? (
         <Dialog>
           <DialogTrigger asChild className="cursor-pointer">
             <Button variant="outline" size="sm">
-              View Detail
+              {t("View Detail")}
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-4xl max-h-[80vh]">
             <DialogHeader>
-              <DialogTitle>{original.patientName} Details</DialogTitle>
+              <DialogTitle>{original.patientName} {t("Details")}</DialogTitle>
               <DialogDescription>
-                {original.patientName} information Details
+                {original.patientName} {t("information Details")}
               </DialogDescription>
             </DialogHeader>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 overflow-auto">
               <div className="flex flex-col gap-2">
-                <span className="w-fit text-red-400 font-semibold">Reason</span>
+                <span className="w-fit text-red-400 font-semibold">{t("Reason")}</span>
                 <div className="p-2 rounded-md min-h-10">{original.reason}</div>
               </div>
               <div className="flex flex-col gap-2">
                 <span className="w-fit text-red-400 font-semibold">
-                  Symptoms
+                  {t("Symptoms")}
                 </span>
-                <div className="flex flex-col gap-1 p-2 rounded-md max-h-[120px] overflow-y-auto">
+                <div className="flex flex-col gap-1 p-2 rounded-md max-h-30 overflow-y-auto">
                   {original.symptoms?.map((symptom: any, index: any) => (
                     <div key={index} className="text-sm">
                       • {symptom}
@@ -129,9 +129,9 @@ export const columns = (refresh: () => void): ColumnDef<patient>[] => [
               </div>
               <div className="flex flex-col gap-2">
                 <span className="w-fit text-red-400 font-semibold">
-                  Allergies
+                  {t("Allergies")}
                 </span>
-                <div className="flex flex-col gap-1 p-2 rounded-md max-h-[120px] overflow-y-auto">
+                <div className="flex flex-col gap-1 p-2 rounded-md max-h-30 overflow-y-auto">
                   {original.allergies?.map((allergy: any, index: any) => (
                     <div key={index} className="text-sm">
                       • {allergy}
@@ -141,17 +141,17 @@ export const columns = (refresh: () => void): ColumnDef<patient>[] => [
               </div>
               <div className="flex flex-col gap-2">
                 <span className="w-fit text-red-400 font-semibold">
-                  Past Medical History
+                  {t("Past Medical History")}
                 </span>
-                <div className="p-2 rounded-md max-h-[120px] overflow-y-auto whitespace-pre-wrap wrap-break-words">
+                <div className="p-2 rounded-md max-h-30 overflow-y-auto whitespace-pre-wrap wrap-break-words">
                   {original.past_Medical_History || "No information provided"}
                 </div>
               </div>
               <div className="flex flex-col gap-2">
                 <span className="w-fit text-red-400 font-semibold">
-                  Family Medical History
+                  {t("Family Medical History")}
                 </span>
-                <div className="p-2 rounded-md max-h-[120px] overflow-y-auto whitespace-pre-wrap wrap-break-words">
+                <div className="p-2 rounded-md max-h-30 overflow-y-auto whitespace-pre-wrap wrap-break-words">
                   {original.family_Medical_History || "No information provided"}
                 </div>
               </div>
@@ -159,13 +159,13 @@ export const columns = (refresh: () => void): ColumnDef<patient>[] => [
           </DialogContent>
         </Dialog>
       ) : (
-        <p>CheckUp</p>
+        <p>{t("CheckUp")}</p>
       );
     },
   },
   {
     accessorKey: "status",
-    header: () => <div>Status</div>,
+    header: () => <div>{t("Status")}</div>,
   },
   {
     id: "actions",
@@ -177,54 +177,54 @@ export const columns = (refresh: () => void): ColumnDef<patient>[] => [
       return (
         <div className="flex justify-between items-center">
           <AlertDoctor
-            btnName="Cured"
-            title="Disease"
-            description="What was the Disease/Case"
+            btnName={t("Cured")}
+            title={t("Disease")}
+            description={t("What was the Disease/Case")}
             type="text"
-            label="Disease"
-            placeholder="Disease name/Checkup"
+            label={t("Disease")}
+            placeholder={t("Disease name/Checkup")}
             value={disease ?? ""}
             setValue={setDisease}
-            btnText="Submit"
+            btnText={t("Submit")}
             ToDo={async () => {
               const original = row.original as any;
               await handleCured(disease, original.userId, original._id);
               await refresh()
-              toast.success("Patient Data Updated Successfully");
+              toast.success(`${t("Patient Data Updated Successfully")}`);
             }}
           />
           <AlertDoctor
-            btnName="Reschedule"
-            title="Reschedule"
-            description="Set time and Date for the another Schedule"
+            btnName={t("Reschedule")}
+            title={t("Reschedule")}
+            description={t("Set time and Date for the another Schedule")}
             type="datetime-local"
-            label="Date and Time"
-            placeholder="Assign Date and Time"
+            label={t("Date and Time")}
+            placeholder={t("Assign Date and Time")}
             value={date ?? ""}
             setValue={setDate}
-            btnText="Reschedule"
+            btnText={t("Reschedule")}
             ToDo={async () => {
               const original = row.original as any;
               const newDate = new Date(`${date}`);
               await handleReschedule(newDate, original.userId, original._id, original.doctorId);
               await refresh()
-              toast.success("Patient Data Updated Successfully");
+              toast.success(`${t("Patient Data Updated Successfully")}`);
             }}
           />
           <AlertDoctor
-            btnName="Speciality Change"
-            title="Change Specialist"
-            description="Select which specialist you recommend with reason"
+            btnName={t("Speciality Change")}
+            title={t("Change Specialist")}
+            description={t("Select which specialist you recommend with reason")}
             type="text"
-            label="Your reason"
-            label2="select Speciality"
-            placeholder="reason..."
-            placeholder2="select here..."
+            label={t("Your reason")}
+            label2={t("select Speciality")}
+            placeholder={t("reason")}
+            placeholder2={t("select here")}
             value={reason ?? ""}
             value2={speciality ?? ""}
             setValue={setReason}
             setValue2={setSpeciality}
-            btnText="Send"
+            btnText={t("Send")}
             special="yes"
             ToDo={async() => {
               const original = row.original as any;
@@ -235,7 +235,7 @@ export const columns = (refresh: () => void): ColumnDef<patient>[] => [
                 original._id
               );
               await refresh()
-              toast.success("Patient Data Updated Successfully");
+              toast.success(`${t("Patient Data Updated Successfully")}`);
             }}
           />
         </div>

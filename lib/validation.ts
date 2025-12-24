@@ -79,5 +79,5 @@ export const updateCredentialForm = z.object({
   experienceYear: z.coerce.number().min(0, "Please Enter his/her years of Experience"),
   passKey: z.string().min(6, "Please enter 'Six' digit Passkey"),
   roleType: z.string().min(1, "Please Select the role type"),
-  image: z.string().min(10, "Please Upload an image here")
+  image: z.string().min(10, "Please upload an image")
 });

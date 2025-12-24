@@ -55,28 +55,3 @@ export const Specialities = [
     name: "Psychiatry"
   }
 ]
-
-export const sampleDataInformations = [
-  {
-    name: "Abdurehman Ali",
-    visitReason: "Disease",
-    symptom: ["vomiting", "Diarhea"],
-    comment: "It is better to be in afternoon"
-  },
-  {
-    name: "Yusra Ali",
-    visitReason: "CheckUp",
-    comment: "It is better to be in afternoon"
-  },
-  {
-    name: "Mulunesh Ahmed",
-    visitReason: "CheckUp",
-    comment: "It is better to be in afternoon"
-  },
-  {
-    name: "Ali Hussen",
-    visitReason: "Disease",
-    symptom: ["Vomiting", "Diarhea"],
-    comment: "It is better to be in afternoon"
-  }
-]

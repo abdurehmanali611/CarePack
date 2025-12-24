@@ -1,12 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import axios from "axios";
 import { DataTable } from "./data-table";
 import { columns, patient } from "./columns";
+import { useTranslations } from "next-intl";
 
 export function DataTableClientWrapper({ data }: { data: patient[] }) {
   const [fetchedData, setFetchedData] = useState<patient[]>(data);
+  const t = useTranslations("Update")
 
   const refetchData = useCallback(async () => {
     try {
@@ -25,5 +27,7 @@ export function DataTableClientWrapper({ data }: { data: patient[] }) {
     })()
   }, [refetchData]);
 
-  return <DataTable columns={columns(refetchData)} data={fetchedData} />;
+  const memoizedColumns = useMemo(() => columns(refetchData, t), [refetchData, t])
+
+  return <DataTable columns={memoizedColumns} data={fetchedData} />;
 }

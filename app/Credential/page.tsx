@@ -22,6 +22,7 @@ import {
 import { CredentialForm } from "@/lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { User } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -50,6 +51,7 @@ export default function Credential() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [fetchedData, setFetchedData] = useState<userRoleData[] | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const t = useTranslations("credential")
 
   const form = useForm<credentialFormType>({
     resolver: zodResolver(CredentialForm) as any,
@@ -92,18 +94,18 @@ export default function Credential() {
       <Tabs defaultValue="Doctor">
         <TabsList>
           <TabsTrigger value="Doctor" className="cursor-pointer">
-            Doctor
+            {t("Doctor")}
           </TabsTrigger>
           <TabsTrigger value="Admin" className="cursor-pointer">
-            Admin
+            {t("Admin")}
           </TabsTrigger>
         </TabsList>
         <TabsContent value="Doctor">
           <Card>
             <CardHeader>
-              <CardTitle>Doctor Credential</CardTitle>
+              <CardTitle>{t("Doctor Credential")}</CardTitle>
               <CardDescription>
-                Enter Doctor info to have an access for the system
+                {t("Enter Doctor info to have an access for the system")}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -127,23 +129,23 @@ export default function Credential() {
                         name="Full_Name"
                         control={form.control}
                         fieldType={formFieldTypes.INPUT}
-                        label="Full name:"
+                        label={t("Full name:")}
                         icon={User}
-                        placeholder="Abdu Ali"
+                        placeholder={t("Abdu Ali")}
                       />
                       <CustomFormField
                         name="Sex"
                         control={form.control}
                         fieldType={formFieldTypes.RADIO_BUTTON}
                         listdisplay={["Male", "Female", "Other"]}
-                        label="Gender:"
+                        label={t("Gender:")}
                       />
                     </div>
                     <CustomFormField
                       name="image"
                       control={form.control}
                       fieldType={formFieldTypes.IMAGE_UPLOADER}
-                      label="Doctor Image"
+                      label={t("Doctor Image")}
                       handleCloudinary={(result) =>
                         handleUploadSuccess(result, form, setPreviewUrl, "image")
                       }
@@ -156,26 +158,26 @@ export default function Credential() {
                     control={form.control}
                     fieldType={formFieldTypes.SELECT}
                     listdisplay={Specialities}
-                    label="Speciality:"
+                    label={t("Speciality:")}
                   />
                   <div className="flex justify-between items-center gap-16">
                     <CustomFormField
                       name="experienceYear"
                       control={form.control}
                       fieldType={formFieldTypes.INPUT}
-                      label="Experience:"
+                      label={t("Experience:")}
                       type="number"
                     />
                     <CustomFormField
                       name="passKey"
                       control={form.control}
                       fieldType={formFieldTypes.INPUT}
-                      label="PassKey:"
-                      placeholder="123456"
+                      label={t("PassKey:")}
+                      placeholder={t("123456")}
                     />
                   </div>
                   <Button type="submit" className="cursor-pointer">
-                    {isLoading ? "Creating..." : "Create"}
+                    {isLoading ? `${t("Creating" )}`: `${t("Create")}`}
                   </Button>
                 </form>
               </Form>
@@ -186,9 +188,9 @@ export default function Credential() {
           {roleType === undefined ? (
             <Card>
               <CardHeader>
-                <CardTitle>Admin Credential</CardTitle>
+                <CardTitle>{t("Admin Credential")}</CardTitle>
                 <CardDescription>
-                  Enter an Admin info to have an access for the system
+                  {t("Enter an Admin info to have an access for the system")}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -212,23 +214,23 @@ export default function Credential() {
                           name="Full_Name"
                           control={form.control}
                           fieldType={formFieldTypes.INPUT}
-                          label="Full name:"
+                          label={t("Full name:")}
                           icon={User}
-                          placeholder="Abdu Ali"
+                          placeholder={t("Abdu Ali")}
                         />
                         <CustomFormField
                           name="Sex"
                           control={form.control}
                           fieldType={formFieldTypes.RADIO_BUTTON}
                           listdisplay={["Male", "Female", "Other"]}
-                          label="Gender:"
+                          label={t("Gender:")}
                         />
                       </div>
                       <CustomFormField
                         name="image"
                         control={form.control}
                         fieldType={formFieldTypes.IMAGE_UPLOADER}
-                        label="Admin Image"
+                        label={t("Admin Image")}
                         handleCloudinary={(result) =>
                           handleUploadSuccess(result, form, setPreviewUrl, "image")
                         }
@@ -241,19 +243,19 @@ export default function Credential() {
                         name="experienceYear"
                         control={form.control}
                         fieldType={formFieldTypes.INPUT}
-                        label="Experience:"
+                        label={t("Experience:")}
                         type="number"
                       />
                       <CustomFormField
                         name="passKey"
                         control={form.control}
                         fieldType={formFieldTypes.INPUT}
-                        label="PassKey:"
-                        placeholder="123456"
+                        label={t("PassKey:")}
+                        placeholder={t("123456")}
                       />
                     </div>
                     <Button type="submit" className="cursor-pointer">
-                      {isLoading ? "Creating..." : "Create"}
+                      {isLoading ? `${t("Creating...")}` : `${t("Create")}`}
                     </Button>
                   </form>
                 </Form>
@@ -261,7 +263,7 @@ export default function Credential() {
             </Card>
           ) : (
             <p className="font-serif font-semibold text-lg">
-              No Creation for the second Admin
+              {t("No Creation for the second Admin")}
             </p>
           )}
         </TabsContent>

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import {
   Card,
@@ -18,12 +19,21 @@ import { useCallback, useState } from "react";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { newUserSchema } from "@/lib/validation";
 import CustomFormField, { formFieldTypes } from "./customFormField";
+import { onSubmitUser, verifyCredentials } from "@/lib/actions";
+import setLanguageValue from "@/actions/set-languages-action";
 import {
-  onSubmitUser,
-  verifyCredentials,
-} from "@/lib/actions";
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
+import { useTranslations } from "next-intl";
 
 export default function NewUser() {
+  const t = useTranslations("newUser");
   const form = useForm<z.infer<typeof newUserSchema>>({
     resolver: zodResolver(newUserSchema),
     defaultValues: {
@@ -47,7 +57,7 @@ export default function NewUser() {
   const handlePassKeySubmit = useCallback(
     async (item: string) => {
       if (!passKey.trim()) {
-        setDialogError("Please Enter a PassKey");
+        setDialogError(`${t("Please Enter a PassKey")}`);
         return;
       }
       try {
@@ -58,19 +68,24 @@ export default function NewUser() {
           return;
         }
 
-        const user = result.user
-        const formattedName = user.fullName.toLowerCase().replace(/\s+/g, '-')
+        const user = result.user;
+        const formattedName = user.fullName.toLowerCase().replace(/\s+/g, "-");
 
-        if (item === "Admin" && (user.roleType === "Admin" || user.roleType === "Manager")) {
-          setDialogError(null)
-          setPassKey("")
-          router.push(`/Admin/${formattedName}`)
-        } else if(item === "Doctor" && user.roleType === "Doctor") {
-          setDialogError(null)
-          setPassKey("")
-          router.push(`/Doctor/${formattedName}`)
-        }else {
-          setDialogError(`Access Denied. Role type ${user.roleType} is not supported`)
+        if (
+          item === `${t("Admin")}` &&
+          (user.roleType === "Admin" || user.roleType === "Manager")
+        ) {
+          setDialogError(null);
+          setPassKey("");
+          router.push(`/Admin/${formattedName}`);
+        } else if (item === `${t("Doctor")}` && user.roleType === "Doctor") {
+          setDialogError(null);
+          setPassKey("");
+          router.push(`/Doctor/${formattedName}`);
+        } else {
+          setDialogError(
+            `Access Denied. Role type ${user.roleType} is not supported`
+          );
         }
       } catch (error) {
         console.log(error);
@@ -84,10 +99,10 @@ export default function NewUser() {
     return (
       <Alert variant="destructive" className="mx-auto my-10 max-w-xl">
         <AlertTriangle className="w-4 h-4" />
-        <AlertTitle>Submission Error</AlertTitle>
+        <AlertTitle>{t("Submission Error")}</AlertTitle>
         <AlertDescription>{error}</AlertDescription>
         <Button onClick={() => setError(null)} className="mt-4">
-          Try Form Again
+          {t("Try Form Again")}
         </Button>
       </Alert>
     );
@@ -98,13 +113,36 @@ export default function NewUser() {
       <Card className="w-[60%]">
         <CardHeader>
           <CardTitle className="flex flex-col gap-10">
-            <div className="flex gap-2 items-center">
-              <Hospital />
-              <p>CarePack</p>
+            <div className="flex justify-between items-center">
+              <div className="flex flex-col gap-7">
+                <div className="flex gap-2 items-center">
+                  <Hospital />
+                  <p>{t("CarePack")}</p>
+                </div>
+                <p>{t("Hi there 👋")}</p>
+              </div>
+              <Select
+                defaultValue="en"
+                onValueChange={(e: string) => setLanguageValue(e)}
+              >
+                <SelectTrigger className="cursor-pointer">
+                  <SelectValue placeholder="English" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>{t("Select language")}</SelectLabel>
+                    <SelectItem value="en">{t("English")}</SelectItem>
+                    <SelectItem value="am">{t("Amharic")}</SelectItem>
+                    <SelectItem value="ar">{t("Arabic")}</SelectItem>
+                    <SelectItem value="om">{t("Affan Oromo")}</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </div>
-            <p>Hi there 👋</p>
           </CardTitle>
-          <CardDescription>Make Your Appointment in Minute</CardDescription>
+          <CardDescription>
+            {t("Make Your Appointment in Minute")}
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -117,9 +155,9 @@ export default function NewUser() {
               <CustomFormField
                 control={form.control}
                 name="Full_Name"
-                label="Full Name:"
+                label={t("Full Name:")}
                 fieldType={formFieldTypes.INPUT}
-                placeholder="Abiy Ahmed"
+                placeholder={t("Abiy Ahmed")}
                 icon={User}
                 type="name"
               />
@@ -127,18 +165,18 @@ export default function NewUser() {
                 <CustomFormField
                   name="email"
                   control={form.control}
-                  label="Email:"
+                  label={t("Email:")}
                   type="email"
                   fieldType={formFieldTypes.INPUT}
                   icon={Mail}
-                  placeholder="abiyahmed@gmail.com"
+                  placeholder={t("abiyahmed@gmailcom")}
                 />
                 <CustomFormField
                   name="phoneNumber"
                   control={form.control}
-                  placeholder="your phone number"
+                  placeholder={t("your phone number")}
                   fieldType={formFieldTypes.PHONE_INPUT}
-                  label="Phone Number:"
+                  label={t("Phone Number:")}
                 />
               </div>
               <div className="flex justify-between items-center">
@@ -146,14 +184,14 @@ export default function NewUser() {
                   name="birthDate"
                   control={form.control}
                   fieldType={formFieldTypes.CALENDAR}
-                  placeholder="Select Date"
-                  label="Birth Date:"
+                  placeholder={t("Select Date")}
+                  label={t("Birth Date:")}
                 />
                 <CustomFormField
                   name="gender"
                   control={form.control}
                   fieldType={formFieldTypes.RADIO_BUTTON}
-                  label="Gender:"
+                  label={t("Gender:")}
                   listdisplay={["Male", "Female", "Other"]}
                 />
               </div>
@@ -163,30 +201,30 @@ export default function NewUser() {
                   control={form.control}
                   fieldType={formFieldTypes.INPUT}
                   icon={User2}
-                  placeholder="responder name"
-                  label="Emergency Responder:"
+                  placeholder={t("responder name")}
+                  label={t("Emergency Responder:")}
                 />
                 <CustomFormField
                   name="emergencyContactPhone"
                   control={form.control}
                   fieldType={formFieldTypes.PHONE_INPUT}
-                  placeholder="responder phone"
-                  label="Responder Phone:"
+                  placeholder={t("responder phone")}
+                  label={t("Responder Phone:")}
                 />
               </div>
               <Button type="submit" className="cursor-pointer">
-                {proceed ? "Proceeding..." : "Proceed"}
+                {proceed ? `${t("Proceeding")}` : `${t("Proceed")}`}
               </Button>
             </form>
           </Form>
         </CardContent>
         <CardFooter className="justify-between items-center">
           <p>
-            &copy; <span>2025 CarePack</span>
+            &copy; <span>{t("2025 CarePack")}</span>
           </p>
           <CustomFormField
             fieldType={formFieldTypes.ALERTDIALOG}
-            listdisplay={["Doctor", "Admin"]}
+            listdisplay={[`${t("Doctor")}`, `${t("Admin")}`]}
             setPassKey={setPassKey}
             passKey={passKey}
             setDialogError={setDialogError}

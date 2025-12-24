@@ -31,7 +31,7 @@ async function getData(): Promise<patient[]> {
       const user = users.find((u: any) => u._id === item.userId);
       return {
         ...item,
-        patientName: user?.Full_Name || "Unknown",
+        patientName: user?.Full_Name || "-",
         age: user
           ? new Date().getFullYear() - new Date(user?.birthDate).getFullYear()
           : "-",
