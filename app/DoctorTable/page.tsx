@@ -60,7 +60,9 @@ export default function DoctorTable({ name }: { name: string }) {
             schedulingNumber: patientinfo.schedulingNumber,
             reeasonChange: patientinfo.reasonChange,
             recommend: patientinfo.recommend,
-            doctorId: doctor._id
+            doctorId: doctor._id,
+            userId: patientinfo.userId,
+            _id: patientinfo._id 
           })) || []
     );
     setData(flattenedData);

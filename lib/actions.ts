@@ -10,7 +10,25 @@ import z from "zod";
 import axios from "axios";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { credentialFormType } from "@/app/Credential/page";
-import { SendSmSToUser } from "./twilio";
+
+async function sendSmsIfPresent(
+  phone: string | null | undefined,
+  message: string
+) {
+  if (!phone || typeof phone !== "string" || phone.trim() === "") {
+    console.log("sendSmsIfPresent: no phone number provided, skipping SMS.");
+    return;
+  }
+
+  try {
+    await axios.post("/api/send-sms", {
+      number: phone,
+      message,
+    });
+  } catch (err) {
+    console.log("Failed to send SMS:", err);
+  }
+}
 
 interface cloudinarySuccessResult {
   event: "success";
@@ -103,7 +121,7 @@ export async function onSubmitMedical(
     const phoneArray = filteredData.map((item: any) => item.phoneNumber);
     const phone = phoneArray.length > 0 ? phoneArray[0] : null;
     const smsMessaging = `Hi, It's CarePack, Your Appointment Request has been received. We will notify you once it's scheduled.`;
-    await SendSmSToUser(phone, smsMessaging);
+    await sendSmsIfPresent(phone, smsMessaging);
   } catch (error: unknown) {
     setIsLoading(true);
     let errorMessage = "An unknown Error Occured";
@@ -464,7 +482,7 @@ export async function handleSchedule(
     const phoneArray = filteredData2.map((item: any) => item.phoneNumber);
     const phone = phoneArray.length > 0 ? phoneArray[0] : null;
     const smsMessaging = `Hi, It's CarePack, Your Appointment has been scheduled on ${date.toDateString()} with Dr. ${selectedDoctor}. Please be on time.`;
-    await SendSmSToUser(phone, smsMessaging);
+    await sendSmsIfPresent(phone, smsMessaging);
     return data;
   } catch (error: unknown) {
     let errorMessage = "An unknown error happened";
@@ -502,7 +520,7 @@ export async function handleCanceling(rowId: string, reason: string) {
     const phoneArray = filteredData2.map((item: any) => item.phoneNumber);
     const phone = phoneArray.length > 0 ? phoneArray[0] : null;
     const smsMessaging = `Hi, It's CarePack, Sorry, Your Appointment has been cancelled. Reason: ${reason}.`;
-    await SendSmSToUser(phone, smsMessaging);
+    await sendSmsIfPresent(phone, smsMessaging);
     return data;
   } catch (error: unknown) {
     let errorMessage = "An unknown error happened";
@@ -563,11 +581,7 @@ export async function getUserByName(name: string) {
   }
 }
 
-async function updateUserMedication(
-  userId: string,
-  value: string | null,
-  message: string
-) {
+async function updateUserMedication(userId: string, value: string | null) {
   try {
     const response = await axios.patch(
       `http://localhost:4000/medical/${userId}`,
@@ -582,13 +596,6 @@ async function updateUserMedication(
       }
     );
     const data = response.data;
-    const data2 = await fetchingUsers();
-    const filteredData2 = data2.filter((item: any) => {
-      return item._id === userId;
-    });
-    const phoneArray = filteredData2.map((item: any) => item.phoneNumber);
-    const phone = phoneArray.length > 0 ? phoneArray[0] : null;
-    await SendSmSToUser(phone, message);
     return data;
   } catch (error: unknown) {
     let errorMessage = "An unknown error happened";
@@ -621,8 +628,16 @@ export async function handleCured(
     );
     const data = response.data;
     const message =
-      "Hi, It's CarePack, Congratulations! You have been marked as cured. Wishing you continued good health.";
-    await updateUserMedication(userId, value, message);
+      `Hi, It's CarePack, Congratulations! You have been marked as cured from ${value}. Wishing you continued good health.`;
+
+    const data2 = await fetchingUsers();
+    const filteredData2 = data2.filter((item: any) => {
+      return item._id === userId;
+    });
+    const phoneArray = filteredData2.map((item: any) => item.phoneNumber);
+    const phone = phoneArray.length > 0 ? phoneArray[0] : null;
+    await sendSmsIfPresent(phone, message);
+    await updateUserMedication(userId, value);
     return data;
   } catch (error: unknown) {
     let errorMessage = "An unknown error happened";
@@ -719,7 +734,7 @@ export async function handleReschedule(
     const smsMessaging = `Hi, It's CarePack, Your Appointment has been rescheduled to ${value.toDateString()} with Dr. ${
       doctorData.Full_Name
     }. Please be on time.`;
-    await SendSmSToUser(phone, smsMessaging);
+    await sendSmsIfPresent(phone, smsMessaging);
     return data;
   } catch (error: unknown) {
     let errorMessage = "An unknown error happened";
@@ -851,11 +866,11 @@ export async function ApproveChange(row: any, selectedDoctorId: string) {
     const data2 = await fetchingUsers();
     const filteredData = data2.filter((item: any) => {
       return item._id === patientInfo.userId;
-    }); 
+    });
     const phoneArray = filteredData.map((item: any) => item.phoneNumber);
     const phone = phoneArray.length > 0 ? phoneArray[0] : null;
     const smsMessaging = `Hi, It's CarePack, Sorry for the Inconvenience. Your new doctor is Dr. ${newDoctor.Full_Name}. Please contact the clinic for further details.`;
-    await SendSmSToUser(phone, smsMessaging);
+    await sendSmsIfPresent(phone, smsMessaging);
     return data;
   } catch (error: unknown) {
     let errorMessage = "An unknown error happened";

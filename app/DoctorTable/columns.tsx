@@ -22,6 +22,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
 type PatientInfo = {
+  _id: string;
   name: string;
   age: number;
   reason: string;
