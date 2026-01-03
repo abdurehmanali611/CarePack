@@ -12,7 +12,7 @@ import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.share
 import { credentialFormType } from "@/app/Credential/page";
 
 const api = "https://care-pack-back-end.vercel.app"
-const smsApi = "https://care-pack-red.vercel.app/api/send-sms"
+const smsApi = "/app/api/send-sms"
 
 async function sendSmsIfPresent(
   phone: string | null | undefined,
