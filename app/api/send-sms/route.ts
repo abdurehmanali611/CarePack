@@ -3,6 +3,9 @@ import twilio from "twilio";
 
 export async function POST(req: Request) {
   try {
+    console.log("TWILIO_ACCOUNT_SID exists:", !!process.env.TWILIO_ACCOUNT_SID);
+    console.log("TWILIO_AUTH_TOKEN exists:", !!process.env.TWILIO_AUTH_TOKEN);
+    console.log("TWILIO_PHONE_NUMBER:", process.env.TWILIO_PHONE_NUMBER);
     const body = await req.json();
     const { number, message } = body as {
       number?: string | null;
