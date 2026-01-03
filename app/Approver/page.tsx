@@ -1,16 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import Card from "@/components/Card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getStatusCount } from "@/lib/actions";
 import { useTranslations } from "next-intl";
-import dynamic from "next/dynamic";
+import NewAppointment from "./NewAppointment";
 import { useLayoutEffect, useState } from "react";
-
-const NewAppointment = dynamic(() => import("./NewAppointment"));
-const SpecialityChange = dynamic(
-  () => import("../SpecialityChange/SpecialityChange")
-);
 
 export default function Approver() {
   const t = useTranslations("NewApp");
@@ -78,22 +72,7 @@ export default function Approver() {
         />
       </div>
       <div className="container mx-auto py-3">
-        <Tabs defaultValue="new">
-          <TabsList>
-            <TabsTrigger value="new" className="cursor-pointer">
-              {t("New Appointment")}
-            </TabsTrigger>
-            <TabsTrigger value="specialist" className="cursor-pointer">
-              {t("Specialist Change")}
-            </TabsTrigger>
-          </TabsList>
-          <TabsContent value="new">
-            <NewAppointment />
-          </TabsContent>
-          <TabsContent value="specialist">
-            <SpecialityChange />
-          </TabsContent>
-        </Tabs>
+        <NewAppointment />
       </div>
     </div>
   );

@@ -8,7 +8,6 @@ import { useState } from "react";
 import {
   handleCured,
   handleReschedule,
-  handleSpecialityChange,
 } from "@/lib/actions";
 import {
   Dialog,
@@ -172,9 +171,7 @@ export const columns = (refresh: () => void, t: (key: string) => string): Column
     id: "actions",
     cell: ({ row }) => {
       const [disease, setDisease] = useState<string | null>(null);
-      const [reason, setReason] = useState<string | null>(null);
       const [date, setDate] = useState<string | null>(null);
-      const [speciality, setSpeciality] = useState<string | null>(null);
       return (
         <div className="flex justify-between items-center">
           <AlertDoctor
@@ -207,34 +204,7 @@ export const columns = (refresh: () => void, t: (key: string) => string): Column
             ToDo={async () => {
               const original = row.original as any;
               const newDate = new Date(`${date}`);
-              await handleReschedule(newDate, original.userId, original._id, original.doctorId);
-              await refresh()
-              toast.success(`${t("Patient Data Updated Successfully")}`);
-            }}
-          />
-          <AlertDoctor
-            btnName={t("Speciality Change")}
-            title={t("Change Specialist")}
-            description={t("Select which specialist you recommend with reason")}
-            type="text"
-            label={t("Your reason")}
-            label2={t("select Speciality")}
-            placeholder={t("reason")}
-            placeholder2={t("select here")}
-            value={reason ?? ""}
-            value2={speciality ?? ""}
-            setValue={setReason}
-            setValue2={setSpeciality}
-            btnText={t("Send")}
-            special="yes"
-            ToDo={async() => {
-              const original = row.original as any;
-              await handleSpecialityChange(
-                reason,
-                speciality,
-                original.userId,
-                original._id
-              );
+              await handleReschedule(newDate, original._id, original.doctorId);
               await refresh()
               toast.success(`${t("Patient Data Updated Successfully")}`);
             }}

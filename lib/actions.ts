@@ -481,7 +481,7 @@ export async function handleSchedule(
     });
     const phoneArray = filteredData2.map((item: any) => item.phoneNumber);
     const phone = phoneArray.length > 0 ? phoneArray[0] : null;
-    const smsMessaging = `Hi, It's CarePack, Your Appointment has been scheduled on ${date.toDateString()} with Dr. ${selectedDoctor}. Please be on time.`;
+    const smsMessaging = `Hi, It's CarePack, Your Appointment has been scheduled on ${date.toLocaleString()} with ${selectedDoctor}. Please be on time.`;
     await sendSmsIfPresent(phone, smsMessaging);
     return data;
   } catch (error: unknown) {
@@ -653,7 +653,6 @@ export async function handleCured(
 
 export async function handleReschedule(
   value: Date,
-  userId: string,
   id: string,
   doctorId: string
 ) {
@@ -691,18 +690,30 @@ export async function handleReschedule(
 
     const data = response.data;
 
-    await axios.patch(
-      `http://localhost:4000/medical/${userId}`,
-      {
-        schedulingNumber: currentPatientInfo.schedulingNumber + 1,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
+    // First, find the medical record for this user
+    const medicalRecords = await fetchingMedical();
+    const userMedicalRecord = medicalRecords.find(
+      (record: any) => record.userId === currentPatientInfo.userId
     );
 
+    if (userMedicalRecord) {
+      // Update the medical record using the correct medical record ID
+      await axios.patch(
+        `http://localhost:4000/medical/${userMedicalRecord._id}`,  // Use medical record ID
+        {
+          schedulingNumber: currentPatientInfo.schedulingNumber + 1,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    } else {
+      console.error("Medical record not found for user:", currentPatientInfo.userId);
+    }
+
+    // Rest of the function remains the same...
     if (oldAppointmentDate && doctorData.AppointmentDates) {
       const oldDate = new Date(oldAppointmentDate);
 
@@ -725,13 +736,14 @@ export async function handleReschedule(
         }
       );
     }
+    
     const data2 = await fetchingUsers();
     const filteredData2 = data2.filter((item: any) => {
-      return item._id === userId;
+      return item._id === currentPatientInfo.userId;
     });
     const phoneArray = filteredData2.map((item: any) => item.phoneNumber);
     const phone = phoneArray.length > 0 ? phoneArray[0] : null;
-    const smsMessaging = `Hi, It's CarePack, Your Appointment has been rescheduled to ${value.toDateString()} with Dr. ${
+    const smsMessaging = `Hi, It's CarePack, Your Appointment has been rescheduled to ${value.toLocaleString()} with ${
       doctorData.Full_Name
     }. Please be on time.`;
     await sendSmsIfPresent(phone, smsMessaging);
@@ -746,141 +758,5 @@ export async function handleReschedule(
     }
     console.log("❌ Reschedule error:", errorMessage);
     return;
-  }
-}
-
-export async function handleSpecialityChange(
-  value: string | null,
-  speciality: string | null,
-  userId: string,
-  id: string
-) {
-  try {
-    const response = await axios.patch(
-      `http://localhost:4000/credential/patientInfos/${id}`,
-      {
-        status: "specialityChange",
-        reasonChange: value,
-        recommend: speciality,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    const data = response.data;
-    await axios
-      .patch(
-        `http://localhost:4000/medical/${userId}`,
-        {
-          status: "specialityChange",
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
-      .then((res) => res.data)
-      .then((data) => {
-        return data;
-      })
-      .catch((error) => {
-        let errorMessage = "An unknown error happened";
-        if (axios.isAxiosError(error)) {
-          errorMessage = error.response?.data?.message || error.message;
-        } else if (error instanceof Error) {
-          errorMessage = error.message;
-        }
-        console.log(errorMessage);
-        return;
-      });
-    return data;
-  } catch (error: unknown) {
-    let errorMessage = "An unknown error happened";
-    if (axios.isAxiosError(error)) {
-      errorMessage = error.response?.data?.message || error.message;
-    } else if (error instanceof Error) {
-      errorMessage = error.message;
-    }
-    console.log(errorMessage);
-    return;
-  }
-}
-
-export async function ApproveChange(row: any, selectedDoctorId: string) {
-  try {
-    const patientInfo = row.original;
-    const newDoctorResponse = await axios.get(
-      `http://localhost:4000/credential/id/${selectedDoctorId}`
-    );
-    const newDoctor = newDoctorResponse.data;
-
-    const updatedPatientInfo = {
-      name: patientInfo.patientName,
-      age: patientInfo.age,
-      reason: patientInfo.reason,
-      symptoms: patientInfo.symptoms,
-      allergies: patientInfo.allergies,
-      past_Medical_History: patientInfo.past_Medical_History,
-      family_Medical_History: patientInfo.family_Medical_History,
-      AppointmentDate: patientInfo.AppointmentDate,
-      doctorName: newDoctor.Full_Name,
-      status: "Scheduled",
-      schedulingNumber: patientInfo.schedulingNumber + 1,
-      userId: patientInfo.userId,
-      reasonChange: "",
-      recommend: "",
-    };
-
-    const response = await axios.post(
-      "http://localhost:4000/credential/transfer-patient",
-      {
-        currentDoctorId: patientInfo.doctorDocumentId,
-        newDoctorId: selectedDoctorId,
-        patientInfoId: patientInfo.patientInfoId,
-        updatedPatientInfo,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    await axios.patch(
-      `http://localhost:4000/medical/${patientInfo.userId}`,
-      {
-        status: "Scheduled",
-        Doctor: newDoctor.Full_Name,
-        schedulingNumber: patientInfo.schedulingNumber + 1,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    const data = response.data;
-    const data2 = await fetchingUsers();
-    const filteredData = data2.filter((item: any) => {
-      return item._id === patientInfo.userId;
-    });
-    const phoneArray = filteredData.map((item: any) => item.phoneNumber);
-    const phone = phoneArray.length > 0 ? phoneArray[0] : null;
-    const smsMessaging = `Hi, It's CarePack, Sorry for the Inconvenience. Your new doctor is Dr. ${newDoctor.Full_Name}. Please contact the clinic for further details.`;
-    await sendSmsIfPresent(phone, smsMessaging);
-    return data;
-  } catch (error: unknown) {
-    let errorMessage = "An unknown error happened";
-    if (axios.isAxiosError(error)) {
-      errorMessage = error.response?.data?.message || error.message;
-      console.log("Error details:", error.response?.data);
-    } else if (error instanceof Error) {
-      errorMessage = error.message;
-    }
-    console.log("Error approving change:", errorMessage);
-    throw error;
   }
 }

@@ -52,6 +52,7 @@ import {
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "./ui/input-otp";
 import clsx from "clsx";
 import { useTranslations } from "next-intl";
+import { EthiopianDateInput } from "./ethiopian-date-input";
 
 export enum formFieldTypes {
   INPUT = "input",
@@ -64,6 +65,7 @@ export enum formFieldTypes {
   IMAGE_UPLOADER = "imageUploader",
   SKELETON = "skeleton",
   ALERTDIALOG = "alertDialog",
+  ETHIOPIAN_DATE = "ethiopianDate", // NEW FIELD TYPE
 }
 
 interface BaseProps {
@@ -101,7 +103,8 @@ interface FormConnectedProps extends BaseProps {
     | formFieldTypes.RADIO_BUTTON
     | formFieldTypes.SELECT
     | formFieldTypes.IMAGE_UPLOADER
-    | formFieldTypes.SKELETON;
+    | formFieldTypes.SKELETON
+    | formFieldTypes.ETHIOPIAN_DATE; // ADDED TO UNION
 }
 
 interface AlertDialogProps extends BaseProps {
@@ -118,7 +121,7 @@ type customProps = FormConnectedProps | AlertDialogProps;
 
 const RenderInput = ({ field, props }: { field: any; props: customProps }) => {
   const [open, setOpen] = React.useState(false);
-  const t = useTranslations("form")
+  const t = useTranslations("form");
 
   switch (props.fieldType) {
     case formFieldTypes.INPUT:
@@ -252,6 +255,18 @@ const RenderInput = ({ field, props }: { field: any; props: customProps }) => {
         </Popover>
       );
 
+    case formFieldTypes.ETHIOPIAN_DATE: // NEW CASE
+      return (
+        <FormControl>
+          <EthiopianDateInput
+            value={field.value}
+            onChange={(date) => {
+              field.onChange(date);
+            }}
+          />
+        </FormControl>
+      );
+
     case formFieldTypes.PHONE_INPUT:
       return (
         <FormControl>
@@ -368,7 +383,9 @@ const RenderInput = ({ field, props }: { field: any; props: customProps }) => {
                   className="flex items-center gap-2 cursor-pointer"
                 >
                   <Upload className="w-4 h-4" />
-                  {props.previewUrl ? `${t("Change Photo")}` : `${t("Choose File")}`}
+                  {props.previewUrl
+                    ? `${t("Change Photo")}`
+                    : `${t("Choose File")}`}
                 </Button>
               )}
             </CldUploadWidget>
@@ -410,7 +427,7 @@ const RenderInput = ({ field, props }: { field: any; props: customProps }) => {
 };
 
 const CustomFormField = (props: customProps) => {
-  const t = useTranslations("form")
+  const t = useTranslations("form");
   if (props.fieldType === formFieldTypes.ALERTDIALOG) {
     return (
       <>
