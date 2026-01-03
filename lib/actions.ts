@@ -45,6 +45,8 @@ interface statusCount {
   Healed: number;
 }
 
+const api = "https://care-pack-back-end.vercel.app"
+
 export const handleUploadSuccess = (
   result: unknown,
   form: UseFormReturn<any>,
@@ -96,7 +98,7 @@ export async function onSubmitMedical(
       schedulingNumber: 0,
     };
     await axios
-      .post("http://localhost:4000/medical", payload, {
+      .post(`${api}/medical`, payload, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -148,7 +150,7 @@ export async function onSubmitUser(
   try {
     setProceed(true);
     await axios
-      .post("http://localhost:4000/users", values, {
+      .post(`${api}/users`, values, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -191,7 +193,7 @@ export async function onSubmitAdminCreation(
       roleType: role,
     };
     await axios
-      .post("http://localhost:4000/credential", payload, {
+      .post(`${api}/credential`, payload, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -238,7 +240,7 @@ export async function onSubmitDoctorCreation(
       roleType: "Doctor",
     };
     await axios
-      .post("http://localhost:4000/credential", payload, {
+      .post(`${api}/credential`, payload, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -272,7 +274,7 @@ export async function onSubmitDoctorCreation(
 
 export async function fetchingCredential() {
   try {
-    const response = await axios.get("http://localhost:4000/credential", {
+    const response = await axios.get(`${api}/credential`, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -296,7 +298,7 @@ export async function updatingCredential(
 ) {
   try {
     await axios
-      .patch(`http://localhost:4000/credential/${_id}`, values, {
+      .patch(`${api}/credential/${_id}`, values, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -318,7 +320,7 @@ export async function updatingCredential(
 export async function DeletingCredential(_id: string) {
   try {
     await axios
-      .delete(`http://localhost:4000/credential/${_id}`)
+      .delete(`${api}/credential/${_id}`)
       .then((res) => res.data)
       .then((data) => console.log(data));
   } catch (error: unknown) {
@@ -335,7 +337,7 @@ export async function DeletingCredential(_id: string) {
 
 export async function fetchingMedical() {
   try {
-    const response = await axios.get("http://localhost:4000/medical", {
+    const response = await axios.get(`${api}/medical`, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -356,7 +358,7 @@ export async function fetchingMedical() {
 
 export async function fetchingUsers() {
   try {
-    const response = await axios.get("http://localhost:4000/users", {
+    const response = await axios.get(`${api}/users`, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -400,7 +402,7 @@ export async function getStatusCount(): Promise<statusCount> {
 async function updateUserStatus(userId: string, selectedDoctor: string) {
   try {
     const response = await axios.patch(
-      `http://localhost:4000/medical/${userId}`,
+      `${api}/medical/${userId}`,
       { status: "Scheduled", Doctor: selectedDoctor, schedulingNumber: +1 },
       {
         headers: {
@@ -443,7 +445,7 @@ export async function handleSchedule(
 
   try {
     const response = await axios.patch(
-      `http://localhost:4000/credential/${doctorId}`,
+      `${api}/credential/${doctorId}`,
       {
         AppointmentDates: [date.toISOString()],
         patientInfos: [
@@ -499,7 +501,7 @@ export async function handleSchedule(
 export async function handleCanceling(rowId: string, reason: string) {
   try {
     const response = await axios.patch(
-      `http://localhost:4000/medical/${rowId}`,
+      `${api}/medical/${rowId}`,
       { status: "Cancelled", cancellingReason: reason },
       {
         headers: {
@@ -537,7 +539,7 @@ export async function handleCanceling(rowId: string, reason: string) {
 export async function verifyCredentials(passKey: string) {
   try {
     const response = await axios.post(
-      "http://localhost:4000/credential/verify",
+      `${api}/credential/verify`,
       { passKey },
       {
         headers: {
@@ -561,7 +563,7 @@ export async function verifyCredentials(passKey: string) {
 export async function getUserByName(name: string) {
   try {
     const response = await axios.get(
-      `http://localhost:4000/credential/name/${name}`,
+      `${api}/credential/name/${name}`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -584,7 +586,7 @@ export async function getUserByName(name: string) {
 async function updateUserMedication(userId: string, value: string | null) {
   try {
     const response = await axios.patch(
-      `http://localhost:4000/medical/${userId}`,
+      `${api}/medical/${userId}`,
       {
         status: "Healed",
         Disease: value,
@@ -616,7 +618,7 @@ export async function handleCured(
 ) {
   try {
     const response = await axios.patch(
-      `http://localhost:4000/credential/patientInfos/${id}`,
+      `${api}/credential/patientInfos/${id}`,
       {
         status: "Healed",
       },
@@ -658,7 +660,7 @@ export async function handleReschedule(
 ) {
   try {
     const doctorResponse = await axios.get(
-      `http://localhost:4000/credential/id/${doctorId}`
+      `${api}/credential/id/${doctorId}`
     );
     const doctorData = doctorResponse.data;
 
