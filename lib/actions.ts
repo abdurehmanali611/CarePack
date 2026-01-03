@@ -12,7 +12,7 @@ import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.share
 import { credentialFormType } from "@/app/Credential/page";
 
 const api = "https://care-pack-back-end.vercel.app"
-const smsApi = "/app/api/send-sms"
+const smsApi = "/api/send-sms"
 
 async function sendSmsIfPresent(
   phone: string | null | undefined,
@@ -679,7 +679,7 @@ export async function handleReschedule(
     const oldAppointmentDate = currentPatientInfo.AppointmentDate;
 
     const response = await axios.patch(
-      `http://localhost:4000/credential/patientInfos/${id}`,
+      `${api}/credential/patientInfos/${id}`,
       {
         status: "Scheduled",
         schedulingNumber: currentPatientInfo.schedulingNumber + 1,
@@ -703,7 +703,7 @@ export async function handleReschedule(
     if (userMedicalRecord) {
       // Update the medical record using the correct medical record ID
       await axios.patch(
-        `http://localhost:4000/medical/${userMedicalRecord._id}`,  // Use medical record ID
+        `${api}/medical/${userMedicalRecord._id}`,  // Use medical record ID
         {
           schedulingNumber: currentPatientInfo.schedulingNumber + 1,
         },
@@ -729,7 +729,7 @@ export async function handleReschedule(
       ).concat(value);
 
       await axios.patch(
-        `http://localhost:4000/credential/appointment-dates/${doctorId}`,
+        `${api}/credential/appointment-dates/${doctorId}`,
         {
           AppointmentDates: updatedAppointmentDates,
         },
